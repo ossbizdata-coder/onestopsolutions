@@ -57,9 +57,8 @@ class ApiConstants {
   static const String reportsAttendance = '/api/reports/attendance';
   static const String reportsSalary = '/api/reports/salary';
 
-  // Ideas & Improvements
-  static const String ideas = '/api/ideas';
-  static const String improvements = '/api/improvements';
+  // Feedback
+  static const String feedback = '/api/ideas';
 
   // Daily Cash
   static const String dailyCash = '/api/daily-cash';

@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:onestopsolutions/core/theme/app_theme.dart';
 import 'package:onestopsolutions/features/auth/services/auth_service.dart';
 import 'package:onestopsolutions/features/auth/screens/login_screen.dart';
 

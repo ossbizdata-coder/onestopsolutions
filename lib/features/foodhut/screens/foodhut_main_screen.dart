@@ -23,6 +23,10 @@ class _FoodHutMainScreenState extends State<FoodHutMainScreen> {
   int remainingAmount = 0;
   int soldAmount = 0;
 
+  int _preparedQty  = 0;
+  int _remainingQty = 0;
+  int _soldQty      = 0;
+
   @override
   void initState() {
     super.initState();
@@ -43,19 +47,41 @@ class _FoodHutMainScreenState extends State<FoodHutMainScreen> {
 
     int prepared = 0, remaining = 0;
     for (var sale in sl) {
-      final qty = (sale['quantity'] ?? 0) as int;
-      final price = (sale['price'] ?? 0) as int;
-      final type = sale['actionType']?.toString() ?? '';
-      if (type == 'PREPARED') prepared += qty * price;
+      final qty   = ((sale['quantity'] ?? 0) as num).toInt();
+      final price = ((sale['price']    ?? 0) as num).toInt();
+      final type  = sale['actionType']?.toString() ?? '';
+      if (type == 'PREPARED')  prepared  += qty * price;
       if (type == 'REMAINING') remaining += qty * price;
+    }
+
+    // Also pull qty counts from summary API if available
+    int prepQty  = 0, remQty  = 0, soldQty = 0;
+    if (s != null) {
+      prepQty  = ((s['totalPreparedQty']  ?? s['preparedQty']  ?? 0) as num).toInt();
+      remQty   = ((s['totalRemainingQty'] ?? s['remainingQty'] ?? 0) as num).toInt();
+      soldQty  = ((s['totalSoldQty']      ?? s['soldQty']      ?? 0) as num).toInt();
+    }
+    if (prepQty == 0 && remQty == 0) {
+      // fallback: count from sales list
+      for (var sale in sl) {
+        final qty  = ((sale['quantity'] ?? 0) as num).toInt();
+        final type = sale['actionType']?.toString() ?? '';
+        if (type == 'PREPARED')  prepQty  += qty;
+        if (type == 'REMAINING') remQty   += qty;
+      }
+      soldQty = prepQty - remQty;
     }
 
     setState(() {
       summary = s;
       sales = sl;
-      preparedAmount = prepared;
+      preparedAmount  = prepared;
       remainingAmount = remaining;
       soldAmount = prepared - remaining;
+      // store qty counts for cards
+      _preparedQty  = prepQty;
+      _remainingQty = remQty;
+      _soldQty      = soldQty;
       loading = false;
     });
   }
@@ -93,7 +119,7 @@ class _FoodHutMainScreenState extends State<FoodHutMainScreen> {
                     decoration: BoxDecoration(
                       color: Colors.white,
                       borderRadius: BorderRadius.circular(16),
-                      border: Border.all(color: _green.withOpacity(0.3), width: 1.5),
+                      border: Border.all(color: _green.withValues(alpha: 0.3), width: 1.5),
                     ),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -128,11 +154,11 @@ class _FoodHutMainScreenState extends State<FoodHutMainScreen> {
                   // Summary Cards
                   Row(
                     children: [
-                      Expanded(child: _summaryCard('Prepared', preparedAmount, Icons.restaurant_menu, _green)),
+                      Expanded(child: _summaryCard('Prepared', _preparedQty, preparedAmount, Icons.restaurant_menu, _green)),
                       const SizedBox(width: 8),
-                      Expanded(child: _summaryCard('Sold', soldAmount, Icons.trending_up, _blue)),
+                      Expanded(child: _summaryCard('Sold',     _soldQty,     soldAmount,     Icons.trending_up,     _blue)),
                       const SizedBox(width: 8),
-                      Expanded(child: _summaryCard('Remaining', remainingAmount, Icons.inventory_2_outlined, _orange)),
+                      Expanded(child: _summaryCard('Remaining',_remainingQty,remainingAmount,Icons.inventory_2_outlined, _orange)),
                     ],
                   ),
                   const SizedBox(height: 20),
@@ -164,9 +190,9 @@ class _FoodHutMainScreenState extends State<FoodHutMainScreen> {
     ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(msg)));
   }
 
-  Widget _summaryCard(String label, int value, IconData icon, Color color) {
+  Widget _summaryCard(String label, int qty, int amount, IconData icon, Color color) {
     return Container(
-      padding: const EdgeInsets.all(14),
+      padding: const EdgeInsets.all(10),
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(16),
@@ -174,10 +200,11 @@ class _FoodHutMainScreenState extends State<FoodHutMainScreen> {
       ),
       child: Column(
         children: [
-          Icon(icon, color: color, size: 24),
-          const SizedBox(height: 6),
+          Icon(icon, color: color, size: 22),
+          const SizedBox(height: 4),
           Text(label, style: TextStyle(fontSize: 11, fontWeight: FontWeight.w700, color: color)),
-          Text(value.toString(), style: TextStyle(fontSize: 18, fontWeight: FontWeight.w800, color: color)),
+          Text('${qty}x', style: TextStyle(fontSize: 16, fontWeight: FontWeight.w800, color: color)),
+          Text('Rs $amount', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600, color: color.withValues(alpha: 0.8))),
         ],
       ),
     );
@@ -192,14 +219,14 @@ class _FoodHutMainScreenState extends State<FoodHutMainScreen> {
         child: Container(
           padding: const EdgeInsets.all(18),
           decoration: BoxDecoration(
-            gradient: LinearGradient(colors: [color, color.withOpacity(0.8)]),
+            gradient: LinearGradient(colors: [color, color.withValues(alpha: 0.8)]),
             borderRadius: BorderRadius.circular(16),
           ),
           child: Row(
             children: [
               Container(
                 padding: const EdgeInsets.all(10),
-                decoration: BoxDecoration(color: Colors.white.withOpacity(0.2), shape: BoxShape.circle),
+                decoration: BoxDecoration(color: Colors.white.withValues(alpha: 0.2), shape: BoxShape.circle),
                 child: Icon(icon, color: Colors.white, size: 24),
               ),
               const SizedBox(width: 16),
@@ -229,7 +256,7 @@ class _SaleTile extends StatelessWidget {
     return Card(
       margin: const EdgeInsets.only(bottom: 6),
       child: ListTile(
-        leading: CircleAvatar(backgroundColor: color.withOpacity(0.15),
+        leading: CircleAvatar(backgroundColor: color.withValues(alpha: 0.15),
             child: Icon(Icons.fastfood, color: color, size: 20)),
         title: Text('${sale['itemName']} (${sale['variation']})',
             style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 14)),

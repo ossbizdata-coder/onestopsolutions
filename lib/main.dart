@@ -4,7 +4,6 @@ import 'package:onestopsolutions/features/auth/services/auth_service.dart';
 import 'package:onestopsolutions/features/auth/services/pin_service.dart';
 import 'package:onestopsolutions/features/auth/screens/login_screen.dart';
 import 'package:onestopsolutions/features/auth/screens/pin_screen.dart';
-import 'package:onestopsolutions/home/home_screen.dart';
 
 final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
@@ -80,21 +79,29 @@ class _SplashGateState extends State<SplashGate> {
     return Scaffold(
       backgroundColor: AppTheme.primaryColor,
       body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            // App Logo placeholder
+        child: SingleChildScrollView(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+            // App Logo
             Container(
-              width: 100,
-              height: 100,
+              width: 110,
+              height: 110,
               decoration: BoxDecoration(
                 color: Colors.white,
                 borderRadius: BorderRadius.circular(24),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withValues(alpha: 0.15),
+                    blurRadius: 12,
+                    offset: const Offset(0, 4),
+                  ),
+                ],
               ),
-              child: const Icon(
-                Icons.storefront_rounded,
-                size: 60,
-                color: AppTheme.primaryColor,
+              padding: const EdgeInsets.all(10),
+              child: Image.asset(
+                'assets/images/logo.png',
+                fit: BoxFit.contain,
               ),
             ),
             const SizedBox(height: 24),
@@ -112,7 +119,7 @@ class _SplashGateState extends State<SplashGate> {
               'Cafe · Bookshop · Food Hut',
               style: TextStyle(
                 fontSize: 14,
-                color: Colors.white.withOpacity(0.8),
+                color: Colors.white.withValues(alpha: 0.8),
                 letterSpacing: 1.0,
               ),
             ),
@@ -121,9 +128,11 @@ class _SplashGateState extends State<SplashGate> {
               color: Colors.white,
               strokeWidth: 2.5,
             ),
+            const SizedBox(height: 40),
           ],
         ),
       ),
+    ),
     );
   }
 }

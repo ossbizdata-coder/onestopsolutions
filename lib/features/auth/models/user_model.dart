@@ -18,15 +18,13 @@ class AppUser {
       id: json['id'] ?? json['userId'] ?? 0,
       name: json['name'] ?? '',
       email: json['email'] ?? '',
-      role: json['role'] ?? 'STAFF',
+      role: json['role'] ?? 'CUSTOMER',
       shopCode: json['shopCode'],
     );
   }
 
   bool get isSuperAdmin => role.toUpperCase() == 'SUPERADMIN';
-  bool get isAdmin => role.toUpperCase() == 'ADMIN' || isSuperAdmin;
-  bool get isStaff => role.toUpperCase() == 'STAFF';
-  bool get isCustomer => role.toUpperCase() == 'CUSTOMER';
-  bool get canEdit => isAdmin || isSuperAdmin;
+  bool get isAdmin      => role.toUpperCase() == 'ADMIN' || isSuperAdmin;
+  bool get isCustomer   => role.toUpperCase() == 'CUSTOMER';
+  bool get canEdit      => isAdmin;
 }
-

@@ -62,7 +62,7 @@ class _SalaryScreenState extends State<SalaryScreen> {
         final ds = (data['dailySalary'] ?? 0).toDouble();
         final hr = (data['hourlyRate'] ?? 0).toDouble();
         final dr = (data['deductionRatePerHour'] ?? hr).toDouble();
-        final base = worked * ds;
+        final double base = worked.toDouble() * ds;
         final otAmt = otH * hr;
         final dedAmt = dedH * dr;
 

@@ -32,6 +32,39 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
     });
   }
 
+  Widget _buildActionButtons() {
+    final status = today?['status']?.toString().toUpperCase() ?? '';
+    final isWorking = status == 'WORKING';
+    final isNotWorking = status == 'NOT_WORKING';
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        if (!isWorking) ...[
+          ElevatedButton.icon(
+            icon: const Icon(Icons.check_circle_outline),
+            label: Text(isNotWorking ? '✏️ Change to Working' : 'YES — Working Today'),
+            onPressed: () async {
+              await AttendanceService.checkIn();
+              _load();
+            },
+          ),
+          const SizedBox(height: 8),
+        ],
+        if (!isNotWorking) ...[
+          OutlinedButton.icon(
+            icon: const Icon(Icons.cancel_outlined),
+            label: Text(isWorking ? '✏️ Change to Day Off' : 'NO — Day Off'),
+            onPressed: () async {
+              await AttendanceService.markNotWorking();
+              _load();
+            },
+          ),
+        ],
+      ],
+    );
+  }
+
   String _statusLabel(dynamic attendance) {
     if (attendance == null) return 'Not Recorded';
     final status = attendance['status']?.toString() ?? '';
@@ -45,7 +78,7 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
   }
 
   Color _statusColor(dynamic attendance) {
-    final status = attendance?['status']?.toString()?.toUpperCase() ?? '';
+    final status = (attendance != null ? attendance['status']?.toString().toUpperCase() : null) ?? '';
     switch (status) {
       case 'WORKING': return Colors.green;
       case 'NOT_WORKING': return Colors.red;
@@ -88,34 +121,9 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
                               color: _statusColor(today),
                             ),
                           ),
-                          const SizedBox(height: 20),
-                          if (today == null || today!['status'] == 'NOT_STARTED' || today?['status'] == null) ...[
-                            Row(
-                              children: [
-                                Expanded(
-                                  child: ElevatedButton.icon(
-                                    icon: const Icon(Icons.check_circle_outline),
-                                    label: const Text('YES — Working Today'),
-                                    onPressed: () async {
-                                      await AttendanceService.checkIn();
-                                      _load();
-                                    },
-                                  ),
-                                ),
-                                const SizedBox(width: 12),
-                                Expanded(
-                                  child: OutlinedButton.icon(
-                                    icon: const Icon(Icons.cancel_outlined),
-                                    label: const Text('NO — Day Off'),
-                                    onPressed: () async {
-                                      await AttendanceService.markNotWorking();
-                                      _load();
-                                    },
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ],
+                          const SizedBox(height: 12),
+                          // Show action buttons — always allow changing status
+                          _buildActionButtons(),
                         ],
                       ),
                     ),

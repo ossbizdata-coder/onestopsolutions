@@ -46,6 +46,15 @@ class ApiClient {
     );
   }
 
+  static Future<http.Response> patch(String path, Map<String, dynamic> body) async {
+    final token = await _getToken();
+    return http.patch(
+      Uri.parse('${ApiConstants.baseUrl}$path'),
+      headers: _headers(token),
+      body: jsonEncode(body),
+    );
+  }
+
   static Future<http.Response> delete(String path) async {
     final token = await _getToken();
     return http.delete(
