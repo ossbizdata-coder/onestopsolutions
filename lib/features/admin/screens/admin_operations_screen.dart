@@ -1,10 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:onestopsolutions/features/staff/screens/all_users_screen.dart';
-import 'package:onestopsolutions/features/staff/screens/attendance_report_screen.dart';
 import 'package:onestopsolutions/features/shop/screens/credits_screen.dart';
 import 'package:onestopsolutions/features/shop/screens/shop_detail_screen.dart';
 import 'package:onestopsolutions/features/shop/screens/expense_types_screen.dart';
-import 'package:onestopsolutions/features/shop/screens/bank_deposits_screen.dart';
 import 'package:onestopsolutions/features/admin/screens/audit_logs_screen.dart';
 
 class AdminOperationsScreen extends StatelessWidget {
@@ -13,20 +10,6 @@ class AdminOperationsScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final sections = [
-      _OpsSection('Staff Management', [
-        _OpsItem('All Users & Edit Attendance', Icons.people_alt_rounded, const Color(0xFF1565C0),
-            () => Navigator.push(context, MaterialPageRoute(builder: (_) => const AllUsersScreen()))),
-        _OpsItem('Attendance Report', Icons.calendar_month_rounded, const Color(0xFF6A1B9A),
-            () => Navigator.push(context, MaterialPageRoute(builder: (_) => const AttendanceReportScreen()))),
-      ]),
-      _OpsSection('Financial Records', [
-        _OpsItem('Credits (All)', Icons.credit_card_rounded, const Color(0xFFE60B31),
-            () => Navigator.push(context, MaterialPageRoute(builder: (_) => const CreditsScreen()))),
-        _OpsItem('Bank Deposits', Icons.account_balance_rounded, const Color(0xFF2E7D32),
-            () => Navigator.push(context, MaterialPageRoute(builder: (_) => const BankDepositsScreen()))),
-        _OpsItem('Expense Types', Icons.category_rounded, const Color(0xFF6A1B9A),
-            () => Navigator.push(context, MaterialPageRoute(builder: (_) => const ExpenseTypesScreen()))),
-      ]),
       _OpsSection('Shop Daily Entries', [
         _OpsItem('Cafe Entries', Icons.coffee_rounded, const Color(0xFF068A4B),
             () => Navigator.push(context, MaterialPageRoute(builder: (_) => const ShopDetailScreen(shopCode: 'CAFE', shopName: 'Cafe')))),
@@ -34,8 +17,12 @@ class AdminOperationsScreen extends StatelessWidget {
             () => Navigator.push(context, MaterialPageRoute(builder: (_) => const ShopDetailScreen(shopCode: 'BOOKSHOP', shopName: 'Bookshop')))),
         _OpsItem('Food Hut Entries', Icons.restaurant_rounded, const Color(0xFFB65505),
             () => Navigator.push(context, MaterialPageRoute(builder: (_) => const ShopDetailScreen(shopCode: 'FOODHUT', shopName: 'Food Hut')))),
+        _OpsItem('Credits (All)', Icons.credit_card_rounded, const Color(0xFFE60B31),
+            () => Navigator.push(context, MaterialPageRoute(builder: (_) => const CreditsScreen()))),
       ]),
       _OpsSection('System', [
+        _OpsItem('Expense Types', Icons.category_rounded, const Color(0xFF6A1B9A),
+            () => Navigator.push(context, MaterialPageRoute(builder: (_) => const ExpenseTypesScreen()))),
         _OpsItem('Audit Logs', Icons.security_rounded, Colors.red.shade700,
             () => Navigator.push(context, MaterialPageRoute(builder: (_) => const AuditLogsScreen()))),
       ]),
@@ -65,7 +52,7 @@ class AdminOperationsScreen extends StatelessWidget {
               const SizedBox(width: 8),
               Expanded(
                 child: Text(
-                  'SuperAdmin access only. Admins can add/edit/delete shop records via Shop Management. All actions are logged.',
+                  'SuperAdmin must perform these operation very carefully!',
                   style: TextStyle(fontSize: 12, color: Colors.red.shade700, fontWeight: FontWeight.w600),
                 ),
               ),

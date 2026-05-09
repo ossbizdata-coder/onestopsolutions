@@ -45,40 +45,45 @@ class _FoodHutMainScreenState extends State<FoodHutMainScreen> {
     final sl = await FoodHutService.getSalesForDay(_dateStr);
     if (!mounted) return;
 
-    int prepared = 0, remaining = 0;
-    for (var sale in sl) {
-      final qty   = ((sale['quantity'] ?? 0) as num).toInt();
-      final price = ((sale['price']    ?? 0) as num).toInt();
-      final type  = sale['actionType']?.toString() ?? '';
-      if (type == 'PREPARED')  prepared  += qty * price;
-      if (type == 'REMAINING') remaining += qty * price;
+    // Pull totals from summary API (now at correct endpoint /api/sales/day/summary)
+    int prepQty = 0, remQty = 0, soldQty = 0;
+    int prepAmt = 0, remAmt = 0, soldAmt = 0;
+    if (s != null) {
+      prepQty = ((s['totalPreparedQty']  ?? 0) as num).toInt();
+      remQty  = ((s['totalRemainingQty'] ?? 0) as num).toInt();
+      soldQty = ((s['totalSoldQty']      ?? 0) as num).toInt();
+      soldAmt = ((s['totalAmount']       ?? 0) as num).toInt();
     }
 
-    // Also pull qty counts from summary API if available
-    int prepQty  = 0, remQty  = 0, soldQty = 0;
-    if (s != null) {
-      prepQty  = ((s['totalPreparedQty']  ?? s['preparedQty']  ?? 0) as num).toInt();
-      remQty   = ((s['totalRemainingQty'] ?? s['remainingQty'] ?? 0) as num).toInt();
-      soldQty  = ((s['totalSoldQty']      ?? s['soldQty']      ?? 0) as num).toInt();
+    // Compute prepared/remaining amounts from individual sale records
+    for (var sale in sl) {
+      final price   = ((sale['price']        ?? 0) as num).toInt();
+      final pQty    = ((sale['preparedQty']  ?? 0) as num).toInt();
+      final rQty    = ((sale['remainingQty'] ?? 0) as num).toInt();
+      final type    = sale['actionType']?.toString() ?? '';
+      if (type == 'PREPARED')  prepAmt += pQty * price;
+      if (type == 'REMAINING') remAmt  += rQty * price;
     }
+
+    // If summary API returned zeros (no data yet), fallback from sales list
     if (prepQty == 0 && remQty == 0) {
-      // fallback: count from sales list
       for (var sale in sl) {
-        final qty  = ((sale['quantity'] ?? 0) as num).toInt();
+        final pQty = ((sale['preparedQty']  ?? 0) as num).toInt();
+        final rQty = ((sale['remainingQty'] ?? 0) as num).toInt();
         final type = sale['actionType']?.toString() ?? '';
-        if (type == 'PREPARED')  prepQty  += qty;
-        if (type == 'REMAINING') remQty   += qty;
+        if (type == 'PREPARED')  prepQty += pQty;
+        if (type == 'REMAINING') remQty  += rQty;
       }
       soldQty = prepQty - remQty;
+      soldAmt = prepAmt - remAmt;
     }
 
     setState(() {
       summary = s;
       sales = sl;
-      preparedAmount  = prepared;
-      remainingAmount = remaining;
-      soldAmount = prepared - remaining;
-      // store qty counts for cards
+      preparedAmount  = prepAmt;
+      remainingAmount = remAmt;
+      soldAmount      = soldAmt;
       _preparedQty  = prepQty;
       _remainingQty = remQty;
       _soldQty      = soldQty;
@@ -203,8 +208,8 @@ class _FoodHutMainScreenState extends State<FoodHutMainScreen> {
           Icon(icon, color: color, size: 22),
           const SizedBox(height: 4),
           Text(label, style: TextStyle(fontSize: 11, fontWeight: FontWeight.w700, color: color)),
-          Text('${qty}x', style: TextStyle(fontSize: 16, fontWeight: FontWeight.w800, color: color)),
-          Text('Rs $amount', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600, color: color.withValues(alpha: 0.8))),
+          const SizedBox(height: 2),
+          Text('Rs $amount', style: TextStyle(fontSize: 16, fontWeight: FontWeight.w800, color: color)),
         ],
       ),
     );
@@ -253,6 +258,18 @@ class _SaleTile extends StatelessWidget {
         : type == 'REMAINING'
             ? const Color(0xFFFF9F3A)
             : Colors.blue;
+
+    // Use the correct field names from Foodhut_TransactionResponse DTO
+    final prepQty = (sale['preparedQty'] ?? 0) as int;
+    final remQty  = (sale['remainingQty'] ?? 0) as int;
+    final soldQty = (sale['soldQty'] ?? (prepQty - remQty)) as int;
+    final price   = (sale['price'] ?? 0) as int;
+    final recordedBy = sale['recordedBy'] ?? '';
+
+    final displayQty = type == 'PREPARED' ? prepQty
+        : type == 'REMAINING' ? remQty
+        : soldQty;
+
     return Card(
       margin: const EdgeInsets.only(bottom: 6),
       child: ListTile(
@@ -260,13 +277,20 @@ class _SaleTile extends StatelessWidget {
             child: Icon(Icons.fastfood, color: color, size: 20)),
         title: Text('${sale['itemName']} (${sale['variation']})',
             style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 14)),
-        subtitle: Text(type, style: TextStyle(color: color, fontWeight: FontWeight.w500)),
+        subtitle: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(type, style: TextStyle(color: color, fontWeight: FontWeight.w500, fontSize: 12)),
+            if (recordedBy.isNotEmpty)
+              Text('By: $recordedBy', style: const TextStyle(fontSize: 11, color: Colors.grey)),
+          ],
+        ),
         trailing: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.end,
           children: [
-            Text('${sale['quantity']}x', style: const TextStyle(fontWeight: FontWeight.bold)),
-            Text('Rs ${sale['price']}', style: const TextStyle(fontSize: 12, color: Colors.grey)),
+            Text('${displayQty}x', style: const TextStyle(fontWeight: FontWeight.bold)),
+            Text('Rs ${price * displayQty}', style: const TextStyle(fontSize: 12, color: Colors.grey)),
           ],
         ),
       ),

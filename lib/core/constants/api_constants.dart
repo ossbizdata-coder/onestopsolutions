@@ -45,7 +45,7 @@ class ApiConstants {
 
   // Food Hut Sales
   static const String sales = '/api/sales';
-  static const String salesSummary = '/api/sales/summary';
+  static const String salesSummary = '/api/sales/day/summary';
   static String salesForDay(String date) => '/api/sales/day?date=$date';
   static String salesRemaining(String date) => '/api/sales/remaining/$date';
 

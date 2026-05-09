@@ -65,12 +65,12 @@ class _ShopDetailScreenState extends State<ShopDetailScreen> {
 
   bool get canEdit {
     if (currentUser == null) return false;
-    return currentUser!.isAdmin; // ADMIN or SUPERADMIN only
+    return currentUser!.isAdmin; // ADMIN or SUPERADMIN can add/update entries
   }
 
   bool get canDelete {
     if (currentUser == null) return false;
-    return currentUser!.isAdmin; // ADMIN or SUPERADMIN only
+    return currentUser!.isSuperAdmin; // SUPERADMIN only can edit/delete existing records
   }
 
   double _getOpeningBalance() {
