@@ -65,7 +65,12 @@ class _ShopDetailScreenState extends State<ShopDetailScreen> {
 
   bool get canEdit {
     if (currentUser == null) return false;
-    return currentUser!.role.toUpperCase() != 'CUSTOMER';
+    return currentUser!.isAdmin; // ADMIN or SUPERADMIN only
+  }
+
+  bool get canDelete {
+    if (currentUser == null) return false;
+    return currentUser!.isAdmin; // ADMIN or SUPERADMIN only
   }
 
   double _getOpeningBalance() {
@@ -717,7 +722,8 @@ class _ShopDetailScreenState extends State<ShopDetailScreen> {
                       const SizedBox(height: 12),
 
                       // ── Action Buttons ───────────────────────────────────
-                      if (currentUser?.role.toUpperCase() != 'CUSTOMER')
+                      // ── Action Buttons (ADMIN / SUPERADMIN only) ─────────
+                      if (canEdit)
                         Row(children: [
                           _actionBtn('Expense', Icons.remove_circle, Colors.red,
                               canEdit ? _addExpense : null),
@@ -847,9 +853,7 @@ class _ShopDetailScreenState extends State<ShopDetailScreen> {
     if (isExpense) sorted.sort((a, b) =>
         ((a['amount'] ?? 0.0) as num).compareTo((b['amount'] ?? 0.0) as num));
 
-    final isAdminEdit = canEdit &&
-        (currentUser?.role.toUpperCase() == 'ADMIN' ||
-         currentUser?.role.toUpperCase() == 'SUPERADMIN');
+    final isAdminEdit = canDelete; // ADMIN or SUPERADMIN only
 
     return Card(
       margin: EdgeInsets.zero,

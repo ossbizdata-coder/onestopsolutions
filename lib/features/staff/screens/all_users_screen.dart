@@ -1,6 +1,8 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:onestopsolutions/core/network/api_client.dart';
+import 'package:onestopsolutions/features/auth/services/auth_service.dart';
+import 'package:onestopsolutions/features/staff/screens/user_attendance_editor_screen.dart';
 
 class AllUsersScreen extends StatefulWidget {
   const AllUsersScreen({super.key});
@@ -12,6 +14,7 @@ class _AllUsersScreenState extends State<AllUsersScreen> {
   List<dynamic> users = [];
   bool loading = true;
   String? error;
+  bool isSuperAdmin = false;
 
   @override
   void initState() {
@@ -22,10 +25,15 @@ class _AllUsersScreenState extends State<AllUsersScreen> {
   Future<void> _load() async {
     setState(() { loading = true; error = null; });
     try {
+      final currentUser = await AuthService.getCurrentUser();
       final res = await ApiClient.get('/api/auth/all-users');
       if (res.statusCode == 200) {
         if (!mounted) return;
-        setState(() { users = jsonDecode(res.body); loading = false; });
+        setState(() {
+          users = jsonDecode(res.body);
+          isSuperAdmin = currentUser?.isSuperAdmin ?? false;
+          loading = false;
+        });
       } else {
         if (!mounted) return;
         setState(() { error = 'Failed to load users (${res.statusCode})'; loading = false; });
@@ -70,28 +78,64 @@ class _AllUsersScreenState extends State<AllUsersScreen> {
                       itemBuilder: (context, i) {
                         final u = users[i];
                         final role = u['role']?.toString() ?? 'STAFF';
+                        final userId = u['id'] as int? ?? 0;
+                        final userName = u['name']?.toString() ?? 'User';
+
                         return Card(
                           margin: const EdgeInsets.only(bottom: 10),
                           child: ListTile(
                             leading: CircleAvatar(
-                              backgroundColor: _roleColor(role).withOpacity(0.15),
+                              backgroundColor: _roleColor(role).withValues(alpha: 0.15),
                               child: Text(
-                                (u['name']?.toString() ?? '?').substring(0, 1).toUpperCase(),
+                                userName.isNotEmpty ? userName[0].toUpperCase() : '?',
                                 style: TextStyle(fontWeight: FontWeight.bold, color: _roleColor(role)),
                               ),
                             ),
-                            title: Text(u['name']?.toString() ?? '',
+                            title: Text(userName,
                                 style: const TextStyle(fontWeight: FontWeight.w600)),
                             subtitle: Text(u['email']?.toString() ?? ''),
-                            trailing: Container(
-                              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-                              decoration: BoxDecoration(
-                                color: _roleColor(role).withOpacity(0.1),
-                                borderRadius: BorderRadius.circular(12),
-                                border: Border.all(color: _roleColor(role).withOpacity(0.4)),
-                              ),
-                              child: Text(role,
-                                  style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: _roleColor(role))),
+                            trailing: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Container(
+                                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                                  decoration: BoxDecoration(
+                                    color: _roleColor(role).withValues(alpha: 0.1),
+                                    borderRadius: BorderRadius.circular(12),
+                                    border: Border.all(color: _roleColor(role).withValues(alpha: 0.4)),
+                                  ),
+                                  child: Text(role,
+                                      style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: _roleColor(role))),
+                                ),
+                                // SuperAdmin only: edit attendance
+                                if (isSuperAdmin) ...[
+                                  const SizedBox(width: 6),
+                                  Tooltip(
+                                    message: 'Edit Attendance',
+                                    child: InkWell(
+                                      borderRadius: BorderRadius.circular(8),
+                                      onTap: () => Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (_) => UserAttendanceEditorScreen(
+                                            userId: userId,
+                                            userName: userName,
+                                          ),
+                                        ),
+                                      ),
+                                      child: Container(
+                                        padding: const EdgeInsets.all(6),
+                                        decoration: BoxDecoration(
+                                          color: Colors.indigo.shade50,
+                                          borderRadius: BorderRadius.circular(8),
+                                        ),
+                                        child: Icon(Icons.edit_calendar,
+                                            size: 18, color: Colors.indigo.shade700),
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ],
                             ),
                           ),
                         );

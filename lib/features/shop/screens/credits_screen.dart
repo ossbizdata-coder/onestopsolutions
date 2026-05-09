@@ -327,7 +327,7 @@ class _CreditsScreenState extends State<CreditsScreen> {
                                         color: isPaid ? Colors.green : Colors.red,
                                       )),
                                   const SizedBox(height: 4),
-                                  if (!isPaid)
+                                  if (!isPaid && _isAdmin)
                                     GestureDetector(
                                       onTap: () => _markPaid(c),
                                       child: Container(
@@ -340,7 +340,7 @@ class _CreditsScreenState extends State<CreditsScreen> {
                                             style: TextStyle(fontSize: 11, color: Colors.white, fontWeight: FontWeight.w700)),
                                       ),
                                     )
-                                  else
+                                  else if (isPaid)
                                     Container(
                                       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
                                       decoration: BoxDecoration(

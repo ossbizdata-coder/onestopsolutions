@@ -10,6 +10,7 @@ import 'package:onestopsolutions/features/auth/screens/login_screen.dart';
 import 'package:onestopsolutions/features/staff/screens/attendance_screen.dart';
 import 'package:onestopsolutions/features/staff/screens/salary_screen.dart';
 import 'package:onestopsolutions/features/staff/screens/ideas_screen.dart';
+import 'package:onestopsolutions/features/staff/screens/improvements_screen.dart';
 import 'package:onestopsolutions/features/staff/screens/attendance_report_screen.dart';
 import 'package:onestopsolutions/features/shop/screens/shop_detail_screen.dart';
 import 'package:onestopsolutions/features/shop/screens/credits_screen.dart';
@@ -484,9 +485,11 @@ class MyActivitiesScreen extends StatelessWidget {
           () => Navigator.push(context, MaterialPageRoute(builder: (_) => const AttendanceScreen()))),
       _MenuItem('My Salary', Icons.monetization_on_rounded, Colors.teal,
           () => Navigator.push(context, MaterialPageRoute(builder: (_) => const SalaryScreen()))),
-      _MenuItem('Feedback', Icons.feedback_outlined, AppTheme.primaryColor,
+      _MenuItem('Feedback / Ideas', Icons.feedback_outlined, AppTheme.primaryColor,
           () => Navigator.push(context, MaterialPageRoute(builder: (_) => const FeedbackScreen()))),
-      // Attendance Report only for ADMIN role (not SuperAdmin)
+      _MenuItem('Improvements', Icons.trending_up_rounded, Colors.deepOrange,
+          () => Navigator.push(context, MaterialPageRoute(builder: (_) => const ImprovementsScreen()))),
+      // Attendance Report only for ADMIN role (not SuperAdmin — they have it in Admin Operations)
       if (user.role.toUpperCase() == 'ADMIN')
         _MenuItem('Attendance Report', Icons.bar_chart_rounded, Colors.indigo,
             () => Navigator.push(context, MaterialPageRoute(builder: (_) => const AttendanceReportScreen()))),

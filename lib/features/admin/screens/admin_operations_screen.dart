@@ -14,7 +14,7 @@ class AdminOperationsScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final sections = [
       _OpsSection('Staff Management', [
-        _OpsItem('All Users', Icons.people_alt_rounded, const Color(0xFF1565C0),
+        _OpsItem('All Users & Edit Attendance', Icons.people_alt_rounded, const Color(0xFF1565C0),
             () => Navigator.push(context, MaterialPageRoute(builder: (_) => const AllUsersScreen()))),
         _OpsItem('Attendance Report', Icons.calendar_month_rounded, const Color(0xFF6A1B9A),
             () => Navigator.push(context, MaterialPageRoute(builder: (_) => const AttendanceReportScreen()))),
@@ -65,7 +65,7 @@ class AdminOperationsScreen extends StatelessWidget {
               const SizedBox(width: 8),
               Expanded(
                 child: Text(
-                  'SuperAdmin access only. All actions are logged.',
+                  'SuperAdmin access only. Admins can add/edit/delete shop records via Shop Management. All actions are logged.',
                   style: TextStyle(fontSize: 12, color: Colors.red.shade700, fontWeight: FontWeight.w600),
                 ),
               ),

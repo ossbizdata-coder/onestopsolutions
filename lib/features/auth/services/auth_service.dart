@@ -24,7 +24,7 @@ class AuthService {
     required String name,
     required String email,
     required String password,
-    String role = 'STAFF',
+    String role = 'CUSTOMER',
   }) async {
     final res = await ApiClient.post(ApiConstants.register, {
       'name': name,
