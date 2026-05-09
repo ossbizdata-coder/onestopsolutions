@@ -28,10 +28,15 @@ android {
         targetSdk = flutter.targetSdkVersion
         versionCode = flutter.versionCode
         versionName = flutter.versionName
+
+        // Enable multidex for large apps
+        multiDexEnabled = true
     }
 
     buildTypes {
         release {
+            // Use debug signing for development builds to avoid certificate issues
+            // For production Play Store release, create a proper signing key
             signingConfig = signingConfigs.getByName("debug")
             // R8 code shrinking + resource shrinking — reduces APK size significantly
             isMinifyEnabled = true
@@ -40,6 +45,9 @@ android {
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
+        }
+        debug {
+            signingConfig = signingConfigs.getByName("debug")
         }
     }
 }

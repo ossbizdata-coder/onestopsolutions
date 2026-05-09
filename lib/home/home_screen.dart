@@ -137,7 +137,7 @@ class _HomeScreenState extends State<HomeScreen> {
       body: RefreshIndicator(
         onRefresh: _loadUser,
         child: ListView(
-          padding: const EdgeInsets.all(20),
+          padding: const EdgeInsets.symmetric(horizontal: 0, vertical: 16),
           children: [
             // ── Quick Balance Summary (Admin/SuperAdmin) ─────
             if (user != null && (user.isAdmin || user.isSuperAdmin)) ...[
@@ -330,31 +330,34 @@ class _QuickBalanceCard extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
 
-                // Row 1: 3 shops
-                Row(
-                  children: [
-                    Expanded(child: _BalanceTile(
-                      label: '☕ Cafe',
-                      amount: shopBalances['CAFE'] ?? 0,
-                      color: AppTheme.cafeColor,
-                    )),
-                    const SizedBox(width: 6),
-                    Expanded(child: _BalanceTile(
-                      label: '📚 Bookshop',
-                      amount: shopBalances['BOOKSHOP'] ?? 0,
-                      color: AppTheme.bookshopColor,
-                    )),
-                    const SizedBox(width: 6),
-                    Expanded(child: _BalanceTile(
-                      label: '🍽️ Food Hut',
-                      amount: shopBalances['FOODHUT'] ?? 0,
-                      color: AppTheme.foodhutColor,
-                    )),
-                  ],
+                // Shop 1: Cafe (full width)
+                _BalanceTile(
+                  label: '☕ Cafe',
+                  amount: shopBalances['CAFE'] ?? 0,
+                  color: AppTheme.cafeColor,
+                  fullWidth: true,
                 ),
-                const SizedBox(height: 6),
+                const SizedBox(height: 8),
 
-                // Row 2: Credits (full width)
+                // Shop 2: Bookshop (full width)
+                _BalanceTile(
+                  label: '📚 Bookshop',
+                  amount: shopBalances['BOOKSHOP'] ?? 0,
+                  color: AppTheme.bookshopColor,
+                  fullWidth: true,
+                ),
+                const SizedBox(height: 8),
+
+                // Shop 3: Food Hut (full width)
+                _BalanceTile(
+                  label: '🍽️ Food Hut',
+                  amount: shopBalances['FOODHUT'] ?? 0,
+                  color: AppTheme.foodhutColor,
+                  fullWidth: true,
+                ),
+                const SizedBox(height: 8),
+
+                // Credits (full width)
                 _BalanceTile(
                   label: '💳 Unpaid Credits',
                   amount: unpaidCredits,
@@ -384,7 +387,7 @@ class _BalanceTile extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       padding: EdgeInsets.symmetric(
-          horizontal: fullWidth ? 14 : 10, vertical: 9),
+          horizontal: fullWidth ? 16 : 10, vertical: fullWidth ? 12 : 9),
       decoration: BoxDecoration(
         color: color,
         borderRadius: BorderRadius.circular(10),
@@ -403,13 +406,13 @@ class _BalanceTile extends StatelessWidget {
                 Text(label,
                     style: const TextStyle(
                         color: Colors.white,
-                        fontSize: 12,
+                        fontSize: 13,
                         fontWeight: FontWeight.w700)),
                 Text(
                   'Rs ${NumberFormat('#,##0').format(amount)}',
                   style: const TextStyle(
                       color: Colors.white,
-                      fontSize: 15,
+                      fontSize: 16,
                       fontWeight: FontWeight.w900),
                 ),
               ],
@@ -556,13 +559,13 @@ class _ShopManagementScreenState extends State<ShopManagementScreen> {
       body: RefreshIndicator(
         onRefresh: _load,
         child: ListView(
-          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+          padding: const EdgeInsets.symmetric(horizontal: 0, vertical: 16),
           children: _loading
               ? [const Padding(padding: EdgeInsets.all(40), child: Center(child: CircularProgressIndicator()))]
               : [
                   _PremiumShopButton(
                     emoji: '☕', text: 'Cafe', balance: _balances['CAFE'],
-                    gradient: const [Color(0xFF068A4B), Color(0xFF66BB6A)],
+                    gradient: const [Color(0xFF08A359), Color(0xFF66BB6A)],
                     icon: Icons.coffee_rounded,
                     onTap: () => _nav(const ShopDetailScreen(shopCode: 'CAFE', shopName: 'Cafe')),
                   ),
@@ -852,7 +855,7 @@ class _BusinessSummaryScreenState extends State<BusinessSummaryScreen> {
       body: RefreshIndicator(
         onRefresh: _load,
         child: ListView(
-          padding: const EdgeInsets.all(20),
+          padding: const EdgeInsets.symmetric(horizontal: 0, vertical: 16),
           children: [
             // ── MONTH SWITCHER ────────────────────────────────
             Container(
@@ -1104,7 +1107,7 @@ class _ActivityScreen extends StatelessWidget {
       backgroundColor: const Color(0xFFF7F9FB),
       appBar: AppBar(title: Text(title)),
       body: ListView.separated(
-        padding: const EdgeInsets.all(16),
+        padding: const EdgeInsets.symmetric(horizontal: 0, vertical: 16),
         itemCount: items.length,
         separatorBuilder: (_, __) => const SizedBox(height: 10),
         itemBuilder: (context, i) {

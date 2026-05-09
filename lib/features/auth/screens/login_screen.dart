@@ -24,20 +24,28 @@ class _LoginScreenState extends State<LoginScreen> {
     if (!_formKey.currentState!.validate()) return;
     setState(() { _loading = true; _error = null; });
 
-    final result = await AuthService.login(_emailCtrl.text.trim(), _passCtrl.text.trim());
+    try {
+      final result = await AuthService.login(_emailCtrl.text.trim(), _passCtrl.text.trim());
 
-    if (!mounted) return;
-    setState(() => _loading = false);
-
-    if (result != null) {
-      final hasPinSet = await PinService.hasPinSet();
       if (!mounted) return;
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (_) => PinScreen(isSetup: !hasPinSet)),
-      );
-    } else {
-      setState(() => _error = 'Invalid email or password. Please try again.');
+      setState(() => _loading = false);
+
+      if (result != null) {
+        final hasPinSet = await PinService.hasPinSet();
+        if (!mounted) return;
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (_) => PinScreen(isSetup: !hasPinSet)),
+        );
+      } else {
+        setState(() => _error = 'Invalid email or password. Please try again.');
+      }
+    } catch (e) {
+      if (!mounted) return;
+      setState(() {
+        _loading = false;
+        _error = 'Connection error. Please check your internet and try again.';
+      });
     }
   }
 

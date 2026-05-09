@@ -16,8 +16,19 @@
 # Keep shared_preferences
 -keep class androidx.datastore.** { *; }
 
-
 # Prevent stripping of native methods
 -keepattributes *Annotation*
 -keepattributes SourceFile,LineNumberTable
 
+# ─── AGGRESSIVE SHRINKING ───
+# Remove logging (common size reducer)
+-assumenosideeffects class android.util.Log {
+    public static *** d(...);
+    public static *** v(...);
+    public static *** i(...);
+}
+
+# Remove unused classes and methods
+-dontshrink
+-printmapping build/mapping.txt
+-verbose
