@@ -29,8 +29,10 @@ android {
         versionCode = flutter.versionCode
         versionName = flutter.versionName
 
-        // Enable multidex for large apps
-        multiDexEnabled = true
+        // Only include real-device architectures (excludes x86_64 emulator-only)
+        ndk {
+            abiFilters += listOf("arm64-v8a", "armeabi-v7a")
+        }
     }
 
     buildTypes {

@@ -156,17 +156,8 @@ class _HomeScreenState extends State<HomeScreen> {
               const SizedBox(height: 12),
             ],
 
-            // ── Admin sees My Activities + Shop Management ───
+            // ── Admin sees Shop Management + My Activities ───
             if (user?.isAdmin == true) ...[
-              _EntryCard(
-                icon: Icons.person_rounded,
-                title: 'My Activities',
-                subtitle: 'Attendance · Salary · Feedback',
-                color: AppTheme.staffColor,
-                onTap: () => Navigator.push(context,
-                    MaterialPageRoute(builder: (_) => MyActivitiesScreen(user: user!))),
-              ),
-              const SizedBox(height: 12),
               _EntryCard(
                 icon: Icons.storefront_rounded,
                 title: 'Shop Management',
@@ -175,19 +166,19 @@ class _HomeScreenState extends State<HomeScreen> {
                 onTap: () => Navigator.push(context,
                     MaterialPageRoute(builder: (_) => ShopManagementScreen(user: user!))).then((_) => _loadBalances()),
               ),
-            ],
-
-            // ── SuperAdmin also sees Business Summary + Admin Ops ──
-            if (user?.isSuperAdmin == true) ...[
               const SizedBox(height: 12),
               _EntryCard(
-                icon: Icons.analytics_rounded,
-                title: 'Business Summary',
-                subtitle: 'Monthly Overview · Deposits · Audit Logs',
-                color: Colors.purple.shade700,
+                icon: Icons.person_rounded,
+                title: 'My Activities',
+                subtitle: 'Attendance · Salary · Feedback',
+                color: AppTheme.staffColor,
                 onTap: () => Navigator.push(context,
-                    MaterialPageRoute(builder: (_) => const BusinessSummaryScreen())),
+                    MaterialPageRoute(builder: (_) => MyActivitiesScreen(user: user!))),
               ),
+            ],
+
+            // ── SuperAdmin also sees Admin Ops + Business Summary ──
+            if (user?.isSuperAdmin == true) ...[
               const SizedBox(height: 12),
               _EntryCard(
                 icon: Icons.admin_panel_settings_rounded,
@@ -196,6 +187,15 @@ class _HomeScreenState extends State<HomeScreen> {
                 color: Colors.red.shade700,
                 onTap: () => Navigator.push(context,
                     MaterialPageRoute(builder: (_) => const AdminOperationsScreen())),
+              ),
+              const SizedBox(height: 12),
+              _EntryCard(
+                icon: Icons.analytics_rounded,
+                title: 'Business Summary',
+                subtitle: 'Monthly Overview · Deposits · Audit Logs',
+                color: Colors.purple.shade700,
+                onTap: () => Navigator.push(context,
+                    MaterialPageRoute(builder: (_) => const BusinessSummaryScreen())),
               ),
             ],
           ],
@@ -428,8 +428,6 @@ class MyActivitiesScreen extends StatelessWidget {
           () => Navigator.push(context, MaterialPageRoute(builder: (_) => const SalaryScreen()))),
       _MenuItem('Feedback / Ideas', Icons.feedback_outlined, AppTheme.primaryColor,
           () => Navigator.push(context, MaterialPageRoute(builder: (_) => const FeedbackScreen()))),
-      _MenuItem('Improvements', Icons.trending_up_rounded, Colors.deepOrange,
-          () => Navigator.push(context, MaterialPageRoute(builder: (_) => const ImprovementsScreen()))),
       // Attendance Report only for ADMIN role (not SuperAdmin — they have it in Admin Operations)
       if (user.role.toUpperCase() == 'ADMIN')
         _MenuItem('Attendance Report', Icons.bar_chart_rounded, Colors.indigo,

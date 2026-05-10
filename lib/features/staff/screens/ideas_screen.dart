@@ -24,7 +24,7 @@ class _FeedbackScreenState extends State<FeedbackScreen> {
   Future<void> _load() async {
     setState(() => loading = true);
     try {
-      final res = await ApiClient.get('/api/ideas');
+      final res = await ApiClient.get('/api/messages/idea');
       if (res.statusCode == 200 && mounted) {
         setState(() { items = jsonDecode(res.body); loading = false; });
       } else if (mounted) {
@@ -40,7 +40,7 @@ class _FeedbackScreenState extends State<FeedbackScreen> {
     if (text.isEmpty) return;
     setState(() => submitting = true);
     try {
-      final res = await ApiClient.post('/api/ideas', {'idea': text, 'title': text, 'content': text});
+      final res = await ApiClient.post('/api/messages/idea', {'idea': text, 'title': text, 'content': text});
       if (mounted) {
         if (res.statusCode == 200 || res.statusCode == 201) {
           _ctrl.clear();

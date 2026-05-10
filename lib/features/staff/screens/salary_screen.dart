@@ -134,7 +134,7 @@ class _SalaryScreenState extends State<SalaryScreen> {
   Widget build(BuildContext context) {
     final monthLabel =
         DateFormat.yMMMM().format(DateTime(selectedYear, selectedMonth));
-    final primary = Theme.of(context).colorScheme.primary;
+    const primary = Color(0xFF1565C0); // Nice deep blue
 
     return Scaffold(
       appBar: AppBar(title: const Text('My Salary')),

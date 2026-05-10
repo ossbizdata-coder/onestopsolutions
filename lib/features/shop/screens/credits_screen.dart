@@ -1,5 +1,7 @@
+import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:onestopsolutions/core/network/api_client.dart';
 import 'package:onestopsolutions/features/auth/services/auth_service.dart';
 import 'package:onestopsolutions/features/auth/models/user_model.dart';
 import 'package:onestopsolutions/features/shop/services/shop_service.dart';
@@ -171,6 +173,196 @@ class _CreditsScreenState extends State<CreditsScreen> {
     }
   }
 
+  Future<void> _createNewUser(StateSetter ss, List<Map<String, dynamic>> users,
+      void Function(Map<String, dynamic>) onUserCreated) async {
+    final nameCtrl = TextEditingController();
+    final phoneCtrl = TextEditingController();
+    await showDialog(
+      context: context,
+      builder: (_) => AlertDialog(
+        title: const Text('New Customer', style: TextStyle(fontWeight: FontWeight.bold)),
+        content: Column(mainAxisSize: MainAxisSize.min, children: [
+          TextField(
+            controller: nameCtrl,
+            decoration: InputDecoration(
+              labelText: 'Full Name *',
+              prefixIcon: const Icon(Icons.person_add, size: 20),
+              border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
+              isDense: true,
+            ),
+          ),
+          const SizedBox(height: 12),
+          TextField(
+            controller: phoneCtrl,
+            keyboardType: TextInputType.phone,
+            decoration: InputDecoration(
+              labelText: 'Phone (optional)',
+              prefixIcon: const Icon(Icons.phone, size: 20),
+              border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
+              isDense: true,
+            ),
+          ),
+        ]),
+        actions: [
+          TextButton(onPressed: () => Navigator.pop(context), child: const Text('Cancel')),
+          ElevatedButton(
+            style: ElevatedButton.styleFrom(backgroundColor: _color, foregroundColor: Colors.white),
+            onPressed: () async {
+              final name = nameCtrl.text.trim();
+              if (name.isEmpty) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(content: Text('Name is required')));
+                return;
+              }
+              final res = await ApiClient.post('/api/auth/register', {
+                'name': name,
+                'role': 'CUSTOMER',
+                if (phoneCtrl.text.trim().isNotEmpty) 'phone': phoneCtrl.text.trim(),
+              });
+              if (!context.mounted) return;
+              if (res.statusCode == 200 || res.statusCode == 201) {
+                final newUser = jsonDecode(res.body) as Map<String, dynamic>;
+                users.add(newUser);
+                ss(() => onUserCreated(newUser));
+                Navigator.pop(context);
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(content: Text('User "$name" created'), backgroundColor: Colors.green));
+              } else {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(content: Text('Failed to create user'), backgroundColor: Colors.red));
+              }
+            },
+            child: const Text('Create'),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Future<void> _addCredit() async {
+    final users = await ShopService.getAllUsers();
+    if (!mounted) return;
+
+    Map<String, dynamic>? selectedUser;
+    String selectedShop = 'CAFE';
+    final amtCtrl = TextEditingController();
+    final reasonCtrl = TextEditingController();
+    final shops = ['CAFE', 'BOOKSHOP', 'FOODHUT'];
+
+    final ok = await showDialog<bool>(
+      context: context,
+      builder: (_) => StatefulBuilder(
+        builder: (ctx, ss) => AlertDialog(
+          title: const Text('Add Credit', style: TextStyle(fontWeight: FontWeight.bold)),
+          contentPadding: const EdgeInsets.fromLTRB(20, 16, 20, 0),
+          content: SingleChildScrollView(
+            child: Column(mainAxisSize: MainAxisSize.min, children: [
+              DropdownButtonFormField<Map<String, dynamic>>(
+                decoration: InputDecoration(
+                  labelText: 'User *',
+                  border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
+                  prefixIcon: const Icon(Icons.person, size: 20),
+                  contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+                  isDense: true,
+                ),
+                items: users.map((u) => DropdownMenuItem(
+                  value: u,
+                  child: Text(u['name'] ?? '', style: const TextStyle(fontSize: 14)),
+                )).toList(),
+                onChanged: (v) => ss(() => selectedUser = v),
+              ),
+              Align(
+                alignment: Alignment.centerRight,
+                child: TextButton.icon(
+                  icon: const Icon(Icons.person_add_alt_1, size: 16),
+                  label: const Text('New User', style: TextStyle(fontSize: 12)),
+                  style: TextButton.styleFrom(foregroundColor: _color, padding: EdgeInsets.zero),
+                  onPressed: () => _createNewUser(ss, users, (u) => selectedUser = u),
+                ),
+              ),
+              DropdownButtonFormField<String>(
+                initialValue: selectedShop,
+                decoration: InputDecoration(
+                  labelText: 'Shop *',
+                  border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
+                  prefixIcon: const Icon(Icons.storefront, size: 20),
+                  contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+                  isDense: true,
+                ),
+                items: shops.map((s) => DropdownMenuItem(value: s, child: Text(s))).toList(),
+                onChanged: (v) => ss(() => selectedShop = v ?? 'CAFE'),
+              ),
+              const SizedBox(height: 12),
+              TextField(
+                controller: amtCtrl,
+                keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                decoration: InputDecoration(
+                  labelText: 'Amount (Rs) *',
+                  prefixIcon: const Icon(Icons.attach_money, size: 20),
+                  border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
+                  contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+                  isDense: true,
+                ),
+              ),
+              const SizedBox(height: 12),
+              TextField(
+                controller: reasonCtrl,
+                decoration: InputDecoration(
+                  labelText: 'Reason *',
+                  prefixIcon: const Icon(Icons.notes, size: 20),
+                  border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
+                  contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+                  isDense: true,
+                ),
+              ),
+            ]),
+          ),
+          actions: [
+            TextButton(onPressed: () => Navigator.pop(ctx, false), child: const Text('Cancel')),
+            ElevatedButton(
+              style: ElevatedButton.styleFrom(backgroundColor: _color, foregroundColor: Colors.white),
+              onPressed: () async {
+                if (selectedUser == null) {
+                  ScaffoldMessenger.of(ctx).showSnackBar(const SnackBar(content: Text('Select a user')));
+                  return;
+                }
+                final amount = double.tryParse(amtCtrl.text.trim());
+                if (amount == null || amount <= 0) {
+                  ScaffoldMessenger.of(ctx).showSnackBar(const SnackBar(content: Text('Enter valid amount')));
+                  return;
+                }
+                if (reasonCtrl.text.trim().isEmpty) {
+                  ScaffoldMessenger.of(ctx).showSnackBar(const SnackBar(content: Text('Enter a reason')));
+                  return;
+                }
+                final result = await ShopService.addCredit(
+                  userId: selectedUser!['id'],
+                  amount: amount,
+                  reason: reasonCtrl.text.trim(),
+                  department: selectedShop,
+                  transactionDate: DateTime.now(),
+                );
+                if (ctx.mounted) Navigator.pop(ctx, result);
+              },
+              child: const Text('Add Credit'),
+            ),
+          ],
+        ),
+      ),
+    );
+
+    if (ok == true) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Credit added successfully'), backgroundColor: Colors.green),
+      );
+      _load();
+    } else if (ok == false) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Failed to add credit'), backgroundColor: Colors.red),
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -180,6 +372,15 @@ class _CreditsScreenState extends State<CreditsScreen> {
         iconTheme: const IconThemeData(color: Colors.white),
         actions: [IconButton(icon: const Icon(Icons.refresh), onPressed: _load)],
       ),
+      floatingActionButton: _isAdmin
+          ? FloatingActionButton.extended(
+              onPressed: _addCredit,
+              backgroundColor: _color,
+              foregroundColor: Colors.white,
+              icon: const Icon(Icons.add),
+              label: const Text('Add Credit'),
+            )
+          : null,
       body: Column(children: [
         // Summary banner
         Container(
