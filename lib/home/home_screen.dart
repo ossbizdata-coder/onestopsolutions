@@ -142,6 +142,7 @@ class _HomeScreenState extends State<HomeScreen> {
             // ── Quick Balance Summary (Admin/SuperAdmin) ─────
             if (user != null && (user.isAdmin || user.isSuperAdmin)) ...[
               _QuickBalanceCard(
+                context: context,
                 shopBalances: _shopBalances,
                 unpaidCredits: _unpaidCredits,
                 loading: _balancesLoading,
@@ -273,12 +274,14 @@ class _EntryCard extends StatelessWidget {
 // QUICK BALANCE CARD  (shown on home screen for Admin / SuperAdmin)
 // ─────────────────────────────────────────────────────────────────────────────
 class _QuickBalanceCard extends StatelessWidget {
+  final BuildContext context;
   final Map<String, double> shopBalances;
   final double unpaidCredits;
   final bool loading;
   final Future<void> Function() onRefresh;
 
   const _QuickBalanceCard({
+    required this.context,
     required this.shopBalances,
     required this.unpaidCredits,
     required this.loading,
@@ -287,6 +290,22 @@ class _QuickBalanceCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    void _navigateToShop(String shopCode, String shopName) {
+      Navigator.push(
+        this.context,
+        MaterialPageRoute(
+          builder: (_) => ShopDetailScreen(shopCode: shopCode, shopName: shopName),
+        ),
+      ).then((_) => onRefresh());
+    }
+
+    void _navigateToCredits() {
+      Navigator.push(
+        this.context,
+        MaterialPageRoute(builder: (_) => const CreditsScreen()),
+      ).then((_) => onRefresh());
+    }
+
     return Container(
       decoration: BoxDecoration(
         color: Colors.white,
@@ -318,24 +337,28 @@ class _QuickBalanceCard extends StatelessWidget {
                   label: '☕ Cafe',
                   amount: shopBalances['CAFE'] ?? 0,
                   color: AppTheme.cafeColor,
+                  onTap: () => _navigateToShop('CAFE', 'Cafe'),
                 ),
                 const SizedBox(height: 4),
                 _BalanceTile(
                   label: '📚 Bookshop',
                   amount: shopBalances['BOOKSHOP'] ?? 0,
                   color: AppTheme.bookshopColor,
+                  onTap: () => _navigateToShop('BOOKSHOP', 'Bookshop'),
                 ),
                 const SizedBox(height: 4),
                 _BalanceTile(
                   label: '🍽️ Food Hut',
                   amount: shopBalances['FOODHUT'] ?? 0,
                   color: AppTheme.foodhutColor,
+                  onTap: () => _navigateToShop('FOODHUT', 'Food Hut'),
                 ),
                 const SizedBox(height: 4),
                 _BalanceTile(
                   label: '💳 Unpaid Credits',
                   amount: unpaidCredits,
                   color: AppTheme.creditsColor,
+                  onTap: _navigateToCredits,
                 ),
               ],
             ),
@@ -347,37 +370,46 @@ class _BalanceTile extends StatelessWidget {
   final String label;
   final double amount;
   final Color color;
+  final VoidCallback? onTap;
 
   const _BalanceTile({
     required this.label,
     required this.amount,
     required this.color,
+    this.onTap,
   });
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 10),
-      decoration: BoxDecoration(
-        color: color,
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
+        onTap: onTap,
         borderRadius: BorderRadius.circular(8),
-      ),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Text(label,
-              style: const TextStyle(
-                  color: Colors.white,
-                  fontSize: 14,
-                  fontWeight: FontWeight.w700)),
-          Text(
-            'Rs ${NumberFormat('#,##0').format(amount)}',
-            style: const TextStyle(
-                color: Colors.white,
-                fontSize: 18,
-                fontWeight: FontWeight.w900),
+        child: Container(
+          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 10),
+          decoration: BoxDecoration(
+            color: color,
+            borderRadius: BorderRadius.circular(8),
           ),
-        ],
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(label,
+                  style: const TextStyle(
+                      color: Colors.white,
+                      fontSize: 14,
+                      fontWeight: FontWeight.w700)),
+              Text(
+                'Rs ${NumberFormat('#,##0').format(amount)}',
+                style: const TextStyle(
+                    color: Colors.white,
+                    fontSize: 18,
+                    fontWeight: FontWeight.w900),
+              ),
+            ],
+          ),
+        ),
       ),
     );
   }

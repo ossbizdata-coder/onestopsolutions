@@ -1,7 +1,6 @@
 plugins {
     id("com.android.application")
     id("kotlin-android")
-    // The Flutter Gradle Plugin must be applied after the Android and Kotlin Gradle plugins.
     id("dev.flutter.flutter-gradle-plugin")
 }
 
@@ -16,40 +15,35 @@ android {
     }
 
     kotlinOptions {
-        jvmTarget = JavaVersion.VERSION_17.toString()
+        jvmTarget = "17"
     }
 
     defaultConfig {
-        // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
         applicationId = "com.onestopdaily.onestopsolutions"
-        // You can update the following values to match your application needs.
-        // For more information, see: https://flutter.dev/to/review-gradle-config.
         minSdk = flutter.minSdkVersion
         targetSdk = flutter.targetSdkVersion
         versionCode = flutter.versionCode
         versionName = flutter.versionName
 
-        // Only include real-device architectures (excludes x86_64 emulator-only)
         ndk {
-            abiFilters += listOf("arm64-v8a", "armeabi-v7a")
+            // Filters architectures to include only real devices
+            abiFilters.addAll(listOf("armeabi-v7a", "arm64-v8a"))
         }
     }
 
     buildTypes {
-        release {
-            // Use debug signing for development builds to avoid certificate issues
-            // For production Play Store release, create a proper signing key
+        getByName("release") {
+            // Using debug signing for testing; replace with your release key for Play Store
             signingConfig = signingConfigs.getByName("debug")
-            // R8 code shrinking + resource shrinking — reduces APK size significantly
+            
+            // ── SIZE OPTIMIZATION ──
             isMinifyEnabled = true
             isShrinkResources = true
+
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
-        }
-        debug {
-            signingConfig = signingConfigs.getByName("debug")
         }
     }
 }

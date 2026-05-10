@@ -7,7 +7,6 @@
 -keep class io.flutter.plugins.** { *; }
 
 # Suppress warnings for Flutter Play Store deferred components
-# (not used in standard APK builds — only needed for Play Store dynamic delivery)
 -dontwarn com.google.android.play.core.splitcompat.SplitCompatApplication
 -dontwarn com.google.android.play.core.splitinstall.**
 -dontwarn com.google.android.play.core.tasks.**
@@ -21,14 +20,14 @@
 -keepattributes SourceFile,LineNumberTable
 
 # ─── AGGRESSIVE SHRINKING ───
-# Remove logging (common size reducer)
+# Remove logging to reduce size
 -assumenosideeffects class android.util.Log {
     public static *** d(...);
     public static *** v(...);
     public static *** i(...);
 }
 
-# Remove unused classes and methods
--dontshrink
--printmapping build/mapping.txt
--verbose
+# Optimization settings
+-optimizationpasses 5
+-allowaccessmodification
+-dontpreverify
