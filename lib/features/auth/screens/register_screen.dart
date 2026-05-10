@@ -47,33 +47,33 @@ class _RegisterScreenState extends State<RegisterScreen> {
       appBar: AppBar(title: const Text('Create Account')),
       body: SafeArea(
         child: SingleChildScrollView(
-          padding: const EdgeInsets.all(28),
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 24),
           child: Form(
             key: _formKey,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Text('Full Name', style: TextStyle(fontWeight: FontWeight.w600)),
-                const SizedBox(height: 8),
+                const Text('Full Name', style: TextStyle(fontWeight: FontWeight.w600, fontSize: 13)),
+                const SizedBox(height: 6),
                 TextFormField(
                   controller: _nameCtrl,
                   decoration: const InputDecoration(hintText: 'Your full name', prefixIcon: Icon(Icons.person_outline)),
                   validator: (v) => v == null || v.isEmpty ? 'Name is required' : null,
                 ),
-                const SizedBox(height: 20),
+                const SizedBox(height: 16),
 
-                const Text('Email', style: TextStyle(fontWeight: FontWeight.w600)),
-                const SizedBox(height: 8),
+                const Text('Email', style: TextStyle(fontWeight: FontWeight.w600, fontSize: 13)),
+                const SizedBox(height: 6),
                 TextFormField(
                   controller: _emailCtrl,
                   keyboardType: TextInputType.emailAddress,
                   decoration: const InputDecoration(hintText: 'Enter email', prefixIcon: Icon(Icons.email_outlined)),
                   validator: (v) => v == null || v.isEmpty ? 'Email is required' : null,
                 ),
-                const SizedBox(height: 20),
+                const SizedBox(height: 16),
 
-                const Text('Password', style: TextStyle(fontWeight: FontWeight.w600)),
-                const SizedBox(height: 8),
+                const Text('Password', style: TextStyle(fontWeight: FontWeight.w600, fontSize: 13)),
+                const SizedBox(height: 6),
                 TextFormField(
                   controller: _passCtrl,
                   obscureText: _obscure,
@@ -94,9 +94,16 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     padding: const EdgeInsets.all(12),
                     decoration: BoxDecoration(
                       color: Colors.red.shade50,
-                      borderRadius: BorderRadius.circular(8),
+                      borderRadius: BorderRadius.circular(10),
+                      border: Border.all(color: Colors.red.shade200),
                     ),
-                    child: Text(_error!, style: const TextStyle(color: Colors.red)),
+                    child: Row(
+                      children: [
+                        const Icon(Icons.error_outline, color: Colors.red, size: 18),
+                        const SizedBox(width: 8),
+                        Expanded(child: Text(_error!, style: const TextStyle(color: Colors.red, fontSize: 13))),
+                      ],
+                    ),
                   ),
                 const SizedBox(height: 24),
 
@@ -114,4 +121,3 @@ class _RegisterScreenState extends State<RegisterScreen> {
     );
   }
 }
-

@@ -125,7 +125,7 @@ class _CreditsScreenState extends State<CreditsScreen> {
       context: context,
       builder: (_) => AlertDialog(
         title: const Text('Mark as Paid'),
-        content: Text('Mark Rs ${((c['amount'] ?? 0) as num).toStringAsFixed(2)} credit for ${_userName(c)} as paid?'),
+        content: Text('Mark Rs ${NumberFormat('#,##0').format(c['amount'] ?? 0)} credit for ${_userName(c)} as paid?'),
         actions: [
           TextButton(onPressed: () => Navigator.pop(context, false), child: const Text('Cancel')),
           ElevatedButton(
@@ -151,7 +151,7 @@ class _CreditsScreenState extends State<CreditsScreen> {
       context: context,
       builder: (_) => AlertDialog(
         title: const Text('Delete Credit'),
-        content: Text('Delete Rs ${((c['amount'] ?? 0) as num).toStringAsFixed(2)} credit for ${_userName(c)}?'),
+        content: Text('Delete Rs ${NumberFormat('#,##0').format(c['amount'] ?? 0)} credit for ${_userName(c)}?'),
         actions: [
           TextButton(onPressed: () => Navigator.pop(context, false), child: const Text('Cancel')),
           ElevatedButton(
@@ -183,13 +183,13 @@ class _CreditsScreenState extends State<CreditsScreen> {
       body: Column(children: [
         // Summary banner
         Container(
-          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+          padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 8),
           color: _color.withValues(alpha: 0.05),
           child: Row(children: [
             _amountChip('Total',  totalAmount,  Colors.blueGrey),
-            const SizedBox(width: 8),
+            const SizedBox(width: 4),
             _amountChip('Unpaid', unpaidAmount, Colors.red),
-            const SizedBox(width: 8),
+            const SizedBox(width: 4),
             _amountChip('Paid',   paidAmount,   Colors.green),
           ]),
         ),
@@ -197,17 +197,18 @@ class _CreditsScreenState extends State<CreditsScreen> {
         // Shop filter
         SingleChildScrollView(
           scrollDirection: Axis.horizontal,
-          padding: const EdgeInsets.fromLTRB(12, 6, 12, 0),
+          padding: const EdgeInsets.fromLTRB(6, 4, 6, 0),
           child: Row(children: [
-            const Text('Shop: ', style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600)),
+            const Text('Shop: ', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600)),
             ..._shops.map((s) => Padding(
-              padding: const EdgeInsets.only(right: 6),
+              padding: const EdgeInsets.only(right: 4),
               child: ChoiceChip(
-                label: Text(s, style: const TextStyle(fontSize: 11)),
+                label: Text(s, style: const TextStyle(fontSize: 10)),
                 selected: shopFilter == s,
                 onSelected: (_) { setState(() => shopFilter = s); _applyFilters(); },
                 selectedColor: _color.withValues(alpha: 0.15),
-                labelPadding: const EdgeInsets.symmetric(horizontal: 4),
+                labelPadding: const EdgeInsets.symmetric(horizontal: 2),
+                visualDensity: VisualDensity.compact,
               ),
             )),
           ]),
@@ -215,14 +216,14 @@ class _CreditsScreenState extends State<CreditsScreen> {
 
         // Status + Person filter row
         Padding(
-          padding: const EdgeInsets.fromLTRB(12, 4, 12, 4),
+          padding: const EdgeInsets.fromLTRB(6, 2, 6, 4),
           child: Row(children: [
             // Status chips
-            const Text('Status: ', style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600)),
+            const Text('Status: ', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600)),
             ...['ALL', 'UNPAID', 'PAID'].map((s) => Padding(
-              padding: const EdgeInsets.only(right: 6),
+              padding: const EdgeInsets.only(right: 4),
               child: ChoiceChip(
-                label: Text(s, style: const TextStyle(fontSize: 11)),
+                label: Text(s, style: const TextStyle(fontSize: 10)),
                 selected: statusFilter == s,
                 onSelected: (_) { setState(() => statusFilter = s); _applyFilters(); },
                 selectedColor: s == 'PAID'
@@ -230,26 +231,27 @@ class _CreditsScreenState extends State<CreditsScreen> {
                     : s == 'UNPAID'
                         ? Colors.red.shade100
                         : _color.withValues(alpha: 0.15),
-                labelPadding: const EdgeInsets.symmetric(horizontal: 4),
+                labelPadding: const EdgeInsets.symmetric(horizontal: 2),
+                visualDensity: VisualDensity.compact,
               ),
             )),
             const Spacer(),
             // Person dropdown
-            const Text('Person: ', style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600)),
+            const Text('Person: ', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600)),
             Container(
-              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+              padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 1),
               decoration: BoxDecoration(
                 border: Border.all(color: _color.withValues(alpha: 0.5)),
-                borderRadius: BorderRadius.circular(8),
+                borderRadius: BorderRadius.circular(6),
               ),
               child: DropdownButtonHideUnderline(
                 child: DropdownButton<String>(
                   value: userFilter,
                   isDense: true,
-                  style: const TextStyle(fontSize: 12, color: Colors.black87, fontWeight: FontWeight.w600),
+                  style: const TextStyle(fontSize: 11, color: Colors.black87, fontWeight: FontWeight.w600),
                   items: _uniqueUsers.map((u) => DropdownMenuItem(
                     value: u,
-                    child: Text(u == 'ALL' ? 'All' : u, style: const TextStyle(fontSize: 12)),
+                    child: Text(u == 'ALL' ? 'All' : u, style: const TextStyle(fontSize: 11)),
                   )).toList(),
                   onChanged: (v) { if (v != null) { setState(() => userFilter = v); _applyFilters(); } },
                 ),
@@ -268,7 +270,7 @@ class _CreditsScreenState extends State<CreditsScreen> {
                   : RefreshIndicator(
                       onRefresh: _load,
                       child: ListView.builder(
-                        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                        padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 8),
                         itemCount: filtered.length,
                         itemBuilder: (context, i) {
                           final c = filtered[i];
@@ -280,50 +282,51 @@ class _CreditsScreenState extends State<CreditsScreen> {
                           final name = _userName(c);
 
                           return Card(
-                            margin: const EdgeInsets.only(bottom: 8),
+                            margin: const EdgeInsets.only(bottom: 6),
                             shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(12),
+                              borderRadius: BorderRadius.circular(10),
                               side: BorderSide(
                                 color: isPaid ? Colors.green.shade200 : Colors.red.shade200,
                               ),
                             ),
                             child: Padding(
-                              padding: const EdgeInsets.all(12),
+                              padding: const EdgeInsets.all(10),
                               child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
                                 CircleAvatar(
+                                  radius: 18,
                                   backgroundColor: isPaid ? Colors.green.shade50 : Colors.red.shade50,
                                   child: Icon(
                                     isPaid ? Icons.check_circle : Icons.credit_card,
-                                    color: isPaid ? Colors.green : Colors.red, size: 20,
+                                    color: isPaid ? Colors.green : Colors.red, size: 18,
                                   ),
                                 ),
-                                const SizedBox(width: 12),
+                                const SizedBox(width: 10),
                                 Expanded(
                                   child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                                    Text(name, style: const TextStyle(fontWeight: FontWeight.w700, fontSize: 14)),
+                                    Text(name, style: const TextStyle(fontWeight: FontWeight.w700, fontSize: 13)),
                                     if (reason.isNotEmpty)
-                                      Text(reason, style: const TextStyle(fontSize: 12, color: Colors.black87)),
-                                    const SizedBox(height: 3),
+                                      Text(reason, style: const TextStyle(fontSize: 11, color: Colors.black87)),
+                                    const SizedBox(height: 2),
                                     Row(children: [
                                       if (dept.isNotEmpty) ...[
                                         Container(
-                                          padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                                          padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 1),
                                           decoration: BoxDecoration(
                                             color: _color.withValues(alpha: 0.1),
-                                            borderRadius: BorderRadius.circular(6),
+                                            borderRadius: BorderRadius.circular(4),
                                           ),
-                                          child: Text(dept, style: TextStyle(fontSize: 10, color: _color, fontWeight: FontWeight.w600)),
+                                          child: Text(dept, style: TextStyle(fontSize: 9, color: _color, fontWeight: FontWeight.w600)),
                                         ),
-                                        const SizedBox(width: 6),
+                                        const SizedBox(width: 4),
                                       ],
-                                      Text(_formatDate(dateVal), style: const TextStyle(fontSize: 11, color: Colors.grey)),
+                                      Text(_formatDate(dateVal), style: const TextStyle(fontSize: 10, color: Colors.grey)),
                                     ]),
                                   ]),
                                 ),
                                 Column(crossAxisAlignment: CrossAxisAlignment.end, children: [
-                                  Text('Rs ${amount.toStringAsFixed(2)}',
+                                  Text('Rs ${NumberFormat('#,##0').format(amount)}',
                                       style: TextStyle(
-                                        fontWeight: FontWeight.bold, fontSize: 15,
+                                        fontWeight: FontWeight.bold, fontSize: 14,
                                         color: isPaid ? Colors.green : Colors.red,
                                       )),
                                   const SizedBox(height: 4),
@@ -331,31 +334,31 @@ class _CreditsScreenState extends State<CreditsScreen> {
                                     GestureDetector(
                                       onTap: () => _markPaid(c),
                                       child: Container(
-                                        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                                        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
                                         decoration: BoxDecoration(
                                           color: Colors.green.shade600,
-                                          borderRadius: BorderRadius.circular(8),
+                                          borderRadius: BorderRadius.circular(6),
                                         ),
                                         child: const Text('Mark Paid',
-                                            style: TextStyle(fontSize: 11, color: Colors.white, fontWeight: FontWeight.w700)),
+                                            style: TextStyle(fontSize: 10, color: Colors.white, fontWeight: FontWeight.w700)),
                                       ),
                                     )
                                   else if (isPaid)
                                     Container(
-                                      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                                      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
                                       decoration: BoxDecoration(
                                         color: Colors.green.shade600,
-                                        borderRadius: BorderRadius.circular(8),
+                                        borderRadius: BorderRadius.circular(6),
                                       ),
                                       child: const Text('PAID',
-                                          style: TextStyle(fontSize: 11, color: Colors.white, fontWeight: FontWeight.bold)),
+                                          style: TextStyle(fontSize: 10, color: Colors.white, fontWeight: FontWeight.bold)),
                                     ),
                                   if (_isAdmin)
                                     GestureDetector(
                                       onTap: () => _deleteCredit(c),
                                       child: const Padding(
-                                        padding: EdgeInsets.only(top: 4),
-                                        child: Icon(Icons.delete_outline, size: 16, color: Colors.red),
+                                        padding: EdgeInsets.only(top: 2),
+                                        child: Icon(Icons.delete_outline, size: 14, color: Colors.red),
                                       ),
                                     ),
                                 ]),
@@ -373,16 +376,16 @@ class _CreditsScreenState extends State<CreditsScreen> {
   Widget _amountChip(String label, double amount, Color color) {
     return Expanded(
       child: Container(
-        padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 10),
+        padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 4),
         decoration: BoxDecoration(
           color: color.withValues(alpha: 0.1),
-          borderRadius: BorderRadius.circular(10),
-          border: Border.all(color: color.withValues(alpha: 0.3)),
+          borderRadius: BorderRadius.circular(8),
+          border: Border.all(color: color.withValues(alpha: 0.2)),
         ),
         child: Column(children: [
-          Text(label, style: TextStyle(fontSize: 10, color: color, fontWeight: FontWeight.w600)),
-          Text('Rs ${amount.toStringAsFixed(0)}',
-              style: TextStyle(fontSize: 13, fontWeight: FontWeight.bold, color: color)),
+          Text(label, style: TextStyle(fontSize: 9, color: color, fontWeight: FontWeight.w600)),
+          Text('Rs ${NumberFormat('#,##0').format(amount)}',
+              style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: color)),
         ]),
       ),
     );

@@ -144,39 +144,39 @@ class _SalaryScreenState extends State<SalaryScreen> {
               children: [
                 // Month selector
                 Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 10),
+                  padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 8),
                   color: Colors.blue.shade50,
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       IconButton(
-                          icon: const Icon(Icons.chevron_left),
+                          icon: const Icon(Icons.chevron_left, size: 20),
                           onPressed: () => _changeMonth(-1)),
                       Text(monthLabel,
                           style: TextStyle(
-                              fontSize: 18,
+                              fontSize: 16,
                               fontWeight: FontWeight.bold,
                               color: Colors.blue.shade900)),
                       IconButton(
-                          icon: const Icon(Icons.chevron_right),
+                          icon: const Icon(Icons.chevron_right, size: 20),
                           onPressed: () => _changeMonth(1)),
                     ],
                   ),
                 ),
                 Expanded(
                   child: SingleChildScrollView(
-                    padding: const EdgeInsets.all(16),
+                    padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 12),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         // Summary card
                         Container(
                           width: double.infinity,
-                          padding: const EdgeInsets.all(20),
+                          padding: const EdgeInsets.all(16),
                           decoration: BoxDecoration(
                             gradient: LinearGradient(
                                 colors: [primary, primary.withOpacity(0.8)]),
-                            borderRadius: BorderRadius.circular(20),
+                            borderRadius: BorderRadius.circular(16),
                           ),
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
@@ -188,33 +188,33 @@ class _SalaryScreenState extends State<SalaryScreen> {
                                   const Text('Monthly Salary',
                                       style: TextStyle(
                                           color: Colors.white70,
-                                          fontSize: 14)),
+                                          fontSize: 13)),
                                   Container(
                                     padding: const EdgeInsets.symmetric(
-                                        horizontal: 10, vertical: 4),
+                                        horizontal: 8, vertical: 3),
                                     decoration: BoxDecoration(
                                         color: Colors.white24,
                                         borderRadius:
-                                            BorderRadius.circular(12)),
+                                            BorderRadius.circular(10)),
                                     child: Text('$totalDaysWorked days',
                                         style: const TextStyle(
                                             color: Colors.white,
-                                            fontSize: 12,
+                                            fontSize: 11,
                                             fontWeight: FontWeight.bold)),
                                   ),
                                 ],
                               ),
-                              const SizedBox(height: 8),
-                              Text('Rs ${finalSalary.toStringAsFixed(2)}',
+                              const SizedBox(height: 6),
+                              Text('Rs ${NumberFormat('#,##0').format(finalSalary)}',
                                   style: const TextStyle(
                                       color: Colors.white,
-                                      fontSize: 36,
+                                      fontSize: 32,
                                       fontWeight: FontWeight.bold)),
-                              const Divider(color: Colors.white30, height: 24),
+                              const Divider(color: Colors.white30, height: 20),
                               _row('Base Salary', baseSalary, Colors.white70),
                               if (totalOTAmount > 0)
                                 _row('Overtime', totalOTAmount,
-                                    Colors.greenAccent,
+                                    Colors.greenAccent.shade400,
                                     prefix: '+'),
                               if (totalDeductionAmount > 0)
                                 _row('Deductions', totalDeductionAmount,
@@ -224,12 +224,12 @@ class _SalaryScreenState extends State<SalaryScreen> {
                                 _row('Credits', totalCredits,
                                     Colors.orange.shade300,
                                     prefix: '-'),
-                              const SizedBox(height: 12),
+                              const SizedBox(height: 10),
                               Container(
-                                padding: const EdgeInsets.all(10),
+                                padding: const EdgeInsets.all(8),
                                 decoration: BoxDecoration(
                                     color: Colors.white12,
-                                    borderRadius: BorderRadius.circular(10)),
+                                    borderRadius: BorderRadius.circular(8)),
                                 child: Row(
                                   mainAxisAlignment:
                                       MainAxisAlignment.spaceBetween,
@@ -237,22 +237,25 @@ class _SalaryScreenState extends State<SalaryScreen> {
                                     Text(
                                         'Rs ${dailySalary.toStringAsFixed(0)}/day',
                                         style: const TextStyle(
-                                            color: Colors.white, fontSize: 13)),
+                                            color: Colors.white, fontSize: 12)),
                                     Text('OT: Rs ${hourlyRate.toStringAsFixed(0)}/hr',
                                         style: const TextStyle(
                                             color: Colors.greenAccent,
-                                            fontSize: 13)),
+                                            fontSize: 12)),
                                   ],
                                 ),
                               ),
                             ],
                           ),
                         ),
-                        const SizedBox(height: 20),
-                        const Text('Daily Breakdown',
-                            style: TextStyle(
-                                fontSize: 16, fontWeight: FontWeight.bold)),
-                        const SizedBox(height: 12),
+                        const SizedBox(height: 16),
+                        const Padding(
+                          padding: EdgeInsets.only(left: 4),
+                          child: Text('Daily Breakdown',
+                              style: TextStyle(
+                                  fontSize: 15, fontWeight: FontWeight.bold)),
+                        ),
+                        const SizedBox(height: 10),
                         if (daily.isEmpty)
                           const Center(
                               child: Padding(
@@ -278,18 +281,18 @@ class _SalaryScreenState extends State<SalaryScreen> {
                             final color =
                                 worked ? Colors.green : Colors.red;
                             return Container(
-                              margin: const EdgeInsets.only(bottom: 10),
-                              padding: const EdgeInsets.all(14),
+                              margin: const EdgeInsets.only(bottom: 8, left: 2, right: 2),
+                              padding: const EdgeInsets.all(12),
                               decoration: BoxDecoration(
                                 color: Colors.white,
-                                borderRadius: BorderRadius.circular(12),
+                                borderRadius: BorderRadius.circular(10),
                                 border: Border.all(
-                                    color: color.withOpacity(0.2)),
+                                    color: color.withOpacity(0.15)),
                                 boxShadow: [
                                   BoxShadow(
-                                      color: Colors.black.withOpacity(0.04),
-                                      blurRadius: 6,
-                                      offset: const Offset(0, 3))
+                                      color: Colors.black.withOpacity(0.03),
+                                      blurRadius: 4,
+                                      offset: const Offset(0, 2))
                                 ],
                               ),
                               child: Row(
@@ -302,37 +305,37 @@ class _SalaryScreenState extends State<SalaryScreen> {
                                     children: [
                                       Text(_fmtDate(d['date']),
                                           style: const TextStyle(
-                                              fontWeight: FontWeight.bold)),
+                                              fontWeight: FontWeight.bold, fontSize: 13)),
                                       Text(
                                           worked ? 'Worked' : 'Not Working',
                                           style: TextStyle(
-                                              fontSize: 12,
+                                              fontSize: 11,
                                               color: color,
                                               fontWeight: FontWeight.w600)),
                                       if (ot > 0)
                                         Text('+${ot.toStringAsFixed(1)}h OT',
                                             style: const TextStyle(
-                                                fontSize: 11,
+                                                fontSize: 10,
                                                 color: Colors.green)),
                                       if (ded > 0)
                                         Text(
                                             '-${ded.toStringAsFixed(1)}h deduction',
                                             style: const TextStyle(
-                                                fontSize: 11,
+                                                fontSize: 10,
                                                 color: Colors.red)),
                                     ],
                                   ),
                                   Text(
-                                      'Rs ${dayPay.toStringAsFixed(2)}',
+                                      'Rs ${NumberFormat('#,##0').format(dayPay)}',
                                       style: TextStyle(
-                                          fontSize: 16,
+                                          fontSize: 15,
                                           fontWeight: FontWeight.bold,
                                           color: primary)),
                                 ],
                               ),
                             );
                           }),
-                        const SizedBox(height: 24),
+                        const SizedBox(height: 20),
                       ],
                     ),
                   ),
@@ -344,16 +347,16 @@ class _SalaryScreenState extends State<SalaryScreen> {
 
   Widget _row(String label, double amount, Color color, {String prefix = ''}) {
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 3),
+      padding: const EdgeInsets.symmetric(vertical: 2),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Text(label,
-              style: const TextStyle(color: Colors.white70, fontSize: 13)),
+              style: const TextStyle(color: Colors.white70, fontSize: 12)),
           Text(
-              '${prefix.isNotEmpty ? '$prefix ' : ''}Rs ${amount.toStringAsFixed(2)}',
+              '${prefix.isNotEmpty ? '$prefix ' : ''}Rs ${NumberFormat('#,##0').format(amount)}',
               style: TextStyle(
-                  color: color, fontSize: 13, fontWeight: FontWeight.bold)),
+                  color: color, fontSize: 12, fontWeight: FontWeight.bold)),
         ],
       ),
     );

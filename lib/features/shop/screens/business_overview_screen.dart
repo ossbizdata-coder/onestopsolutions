@@ -23,7 +23,7 @@ class _BusinessOverviewScreenState extends State<BusinessOverviewScreen> {
 
   Future<void> _load() async {
     setState(() => loading = true);
-    final today = DateFormat('yyyy-MM-dd').format(DateTime.now());
+    final today = DateFormat('yyyy-MM-md').format(DateTime.now());
     try {
       final results = await Future.wait([
         ApiClient.get('/api/transactions/department-summary?department=CAFE&date=$today'),
@@ -61,19 +61,19 @@ class _BusinessOverviewScreenState extends State<BusinessOverviewScreen> {
           : RefreshIndicator(
               onRefresh: _load,
               child: ListView(
-                padding: const EdgeInsets.all(16),
+                padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 12),
                 children: [
                   // Today's headline
                   Container(
-                    padding: const EdgeInsets.all(20),
+                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
                     decoration: BoxDecoration(
                       gradient: LinearGradient(colors: [Colors.indigo.shade700, Colors.indigo.shade500]),
-                      borderRadius: BorderRadius.circular(20),
+                      borderRadius: BorderRadius.circular(16),
                     ),
                     child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
                       Text('Today — ${DateFormat('EEE, MMM d').format(DateTime.now())}',
-                          style: const TextStyle(color: Colors.white70, fontSize: 13)),
-                      const SizedBox(height: 14),
+                          style: const TextStyle(color: Colors.white70, fontSize: 12)),
+                      const SizedBox(height: 12),
                       Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
                         _headlineStat('Total Sales', totalSales, Colors.white),
                         _headlineStat('Expenses', totalExpenses, Colors.orange.shade300),
@@ -81,13 +81,13 @@ class _BusinessOverviewScreenState extends State<BusinessOverviewScreen> {
                       ]),
                     ]),
                   ),
-                  const SizedBox(height: 20),
+                  const SizedBox(height: 16),
 
                   // Per-shop cards
                   _shopCard('☕ Cafe', cafe, const Color(0xFF068A4B)),
-                  const SizedBox(height: 12),
+                  const SizedBox(height: 8),
                   _shopCard('📚 Bookshop', bookshop, const Color(0xFF1565C0)),
-                  const SizedBox(height: 12),
+                  const SizedBox(height: 8),
                   _shopCard('🍽️ Food Hut', foodhut, const Color(0xFFB65505)),
                 ],
               ),
@@ -97,10 +97,10 @@ class _BusinessOverviewScreenState extends State<BusinessOverviewScreen> {
 
   Widget _headlineStat(String label, double value, Color color) {
     return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-      Text(label, style: const TextStyle(color: Colors.white54, fontSize: 11)),
+      Text(label, style: const TextStyle(color: Colors.white54, fontSize: 10)),
       const SizedBox(height: 4),
-      Text('Rs ${value.toStringAsFixed(0)}',
-          style: TextStyle(color: color, fontWeight: FontWeight.bold, fontSize: 17)),
+      Text('Rs ${NumberFormat('#,##0').format(value)}',
+          style: TextStyle(color: color, fontWeight: FontWeight.bold, fontSize: 16)),
     ]);
   }
 
@@ -111,16 +111,16 @@ class _BusinessOverviewScreenState extends State<BusinessOverviewScreen> {
     final credits = _val(data, 'totalCredits');
 
     return Container(
-      padding: const EdgeInsets.all(16),
+      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 14),
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: color.withOpacity(0.25), width: 1.5),
-        boxShadow: [BoxShadow(color: color.withOpacity(0.08), blurRadius: 12, offset: const Offset(0, 4))],
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: color.withOpacity(0.2), width: 1),
+        boxShadow: [BoxShadow(color: color.withOpacity(0.05), blurRadius: 8, offset: const Offset(0, 3))],
       ),
       child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-        Text(name, style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold, color: color)),
-        const SizedBox(height: 12),
+        Text(name, style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: color)),
+        const SizedBox(height: 10),
         Row(children: [
           Expanded(child: _statItem('Sales', sales, color)),
           Expanded(child: _statItem('Expenses', expenses, Colors.red)),
@@ -133,12 +133,11 @@ class _BusinessOverviewScreenState extends State<BusinessOverviewScreen> {
 
   Widget _statItem(String label, double value, Color color) {
     return Column(children: [
-      Text(label, style: TextStyle(fontSize: 11, color: Colors.grey.shade600)),
+      Text(label, style: TextStyle(fontSize: 10, color: Colors.grey.shade600)),
       const SizedBox(height: 4),
-      Text('Rs ${value.toStringAsFixed(0)}',
-          style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: color)),
+      Text('Rs ${NumberFormat('#,##0').format(value)}',
+          textAlign: TextAlign.center,
+          style: TextStyle(fontSize: 13, fontWeight: FontWeight.bold, color: color)),
     ]);
   }
 }
-
-

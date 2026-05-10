@@ -36,24 +36,24 @@ class AdminOperationsScreen extends StatelessWidget {
         iconTheme: const IconThemeData(color: Colors.white),
       ),
       body: ListView(
-        padding: const EdgeInsets.all(16),
+        padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 12),
         children: [
           // Warning banner
           Container(
-            padding: const EdgeInsets.all(12),
-            margin: const EdgeInsets.only(bottom: 16),
+            padding: const EdgeInsets.all(10),
+            margin: const EdgeInsets.only(bottom: 12, left: 2, right: 2),
             decoration: BoxDecoration(
               color: Colors.red.shade50,
-              borderRadius: BorderRadius.circular(12),
+              borderRadius: BorderRadius.circular(10),
               border: Border.all(color: Colors.red.shade200),
             ),
             child: Row(children: [
-              Icon(Icons.admin_panel_settings_rounded, color: Colors.red.shade700, size: 20),
+              Icon(Icons.admin_panel_settings_rounded, color: Colors.red.shade700, size: 18),
               const SizedBox(width: 8),
               Expanded(
                 child: Text(
-                  'SuperAdmin must perform these operation very carefully!',
-                  style: TextStyle(fontSize: 12, color: Colors.red.shade700, fontWeight: FontWeight.w600),
+                  'SuperAdmin must perform these operations very carefully!',
+                  style: TextStyle(fontSize: 11, color: Colors.red.shade700, fontWeight: FontWeight.w600),
                 ),
               ),
             ]),
@@ -61,39 +61,39 @@ class AdminOperationsScreen extends StatelessWidget {
 
           for (final section in sections) ...[
             Padding(
-              padding: const EdgeInsets.only(top: 8, bottom: 8, left: 4),
+              padding: const EdgeInsets.only(top: 6, bottom: 6, left: 4),
               child: Text(section.title,
-                  style: TextStyle(fontSize: 12, fontWeight: FontWeight.w700,
+                  style: TextStyle(fontSize: 11, fontWeight: FontWeight.w700,
                       color: Colors.grey.shade500, letterSpacing: 0.5)),
             ),
             ...section.items.map((item) => Padding(
-              padding: const EdgeInsets.only(bottom: 8),
+              padding: const EdgeInsets.only(bottom: 6),
               child: Material(
                 color: Colors.white,
-                borderRadius: BorderRadius.circular(14),
-                elevation: 1.5,
-                shadowColor: item.color.withValues(alpha: 0.15),
+                borderRadius: BorderRadius.circular(12),
+                elevation: 1,
+                shadowColor: item.color.withValues(alpha: 0.1),
                 child: InkWell(
                   onTap: item.onTap,
-                  borderRadius: BorderRadius.circular(14),
+                  borderRadius: BorderRadius.circular(12),
                   child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 14),
+                    padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
                     child: Row(children: [
                       Container(
-                        width: 44,
-                        height: 44,
+                        width: 40,
+                        height: 40,
                         decoration: BoxDecoration(
                           color: item.color.withValues(alpha: 0.10),
-                          borderRadius: BorderRadius.circular(12),
+                          borderRadius: BorderRadius.circular(10),
                         ),
-                        child: Icon(item.icon, color: item.color, size: 24),
+                        child: Icon(item.icon, color: item.color, size: 22),
                       ),
-                      const SizedBox(width: 14),
+                      const SizedBox(width: 12),
                       Text(item.label,
-                          style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w600, color: Colors.black87)),
+                          style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: Colors.black87)),
                       const Spacer(),
                       Icon(Icons.arrow_forward_ios_rounded, size: 14,
-                          color: item.color.withValues(alpha: 0.6)),
+                          color: item.color.withValues(alpha: 0.5)),
                     ]),
                   ),
                 ),
@@ -119,4 +119,3 @@ class _OpsItem {
   final VoidCallback onTap;
   const _OpsItem(this.label, this.icon, this.color, this.onTap);
 }
-

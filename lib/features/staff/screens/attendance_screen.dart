@@ -42,8 +42,8 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
       children: [
         if (!isWorking) ...[
           ElevatedButton.icon(
-            icon: const Icon(Icons.check_circle_outline),
-            label: Text(isNotWorking ? '✏️ Change to Working' : 'YES — Working Today'),
+            icon: const Icon(Icons.check_circle_outline, size: 20),
+            label: Text(isNotWorking ? 'Change to Working' : 'YES — Working Today'),
             onPressed: () async {
               await AttendanceService.checkIn();
               _load();
@@ -53,8 +53,8 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
         ],
         if (!isNotWorking) ...[
           OutlinedButton.icon(
-            icon: const Icon(Icons.cancel_outlined),
-            label: Text(isWorking ? '✏️ Change to Day Off' : 'NO — Day Off'),
+            icon: const Icon(Icons.cancel_outlined, size: 20),
+            label: Text(isWorking ? 'Change to Day Off' : 'NO — Day Off'),
             onPressed: () async {
               await AttendanceService.markNotWorking();
               _load();
@@ -99,38 +99,41 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
           : RefreshIndicator(
               onRefresh: _load,
               child: ListView(
-                padding: const EdgeInsets.all(16),
+                padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 12),
                 children: [
                   // Today's card
                   Card(
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
                     child: Padding(
-                      padding: const EdgeInsets.all(20),
+                      padding: const EdgeInsets.all(16),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
                             'Today — ${DateFormat('EEEE, MMM d').format(DateTime.now())}',
-                            style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                            style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
                           ),
-                          const SizedBox(height: 12),
+                          const SizedBox(height: 10),
                           Text(
                             _statusLabel(today),
                             style: TextStyle(
-                              fontSize: 20,
+                              fontSize: 18,
                               fontWeight: FontWeight.w700,
                               color: _statusColor(today),
                             ),
                           ),
                           const SizedBox(height: 12),
-                          // Show action buttons — always allow changing status
                           _buildActionButtons(),
                         ],
                       ),
                     ),
                   ),
-                  const SizedBox(height: 20),
-                  const Text('History', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
-                  const SizedBox(height: 8),
+                  const SizedBox(height: 16),
+                  const Padding(
+                    padding: EdgeInsets.only(left: 4),
+                    child: Text('History', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+                  ),
+                  const SizedBox(height: 6),
                   ...history.map((record) => _HistoryTile(record: record)),
                 ],
               ),
@@ -150,25 +153,30 @@ class _HistoryTile extends StatelessWidget {
     final isWorking = status.toUpperCase() == 'WORKING';
 
     return Card(
-      margin: const EdgeInsets.only(bottom: 8),
+      margin: const EdgeInsets.only(bottom: 6, left: 2, right: 2),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
       child: ListTile(
+        dense: true,
         leading: CircleAvatar(
-          backgroundColor: isWorking ? Colors.green.shade100 : Colors.red.shade100,
+          radius: 18,
+          backgroundColor: isWorking ? Colors.green.shade50 : Colors.red.shade50,
           child: Icon(
             isWorking ? Icons.check_circle : Icons.cancel,
             color: isWorking ? Colors.green : Colors.red,
+            size: 18,
           ),
         ),
-        title: Text(date, style: const TextStyle(fontWeight: FontWeight.w600)),
-        subtitle: Text(status),
+        title: Text(date, style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 13)),
+        subtitle: Text(status, style: const TextStyle(fontSize: 12)),
         trailing: record['overtimeHours'] != null && record['overtimeHours'] > 0
             ? Chip(
-                label: Text('+${record['overtimeHours']}h OT'),
-                backgroundColor: Colors.orange.shade100,
+                label: Text('+${record['overtimeHours']}h OT', style: const TextStyle(fontSize: 11)),
+                backgroundColor: Colors.orange.shade50,
+                padding: EdgeInsets.zero,
+                visualDensity: VisualDensity.compact,
               )
             : null,
       ),
     );
   }
 }
-

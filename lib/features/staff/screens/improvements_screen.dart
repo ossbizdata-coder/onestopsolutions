@@ -56,32 +56,34 @@ class _ImprovementsScreenState extends State<ImprovementsScreen> {
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
-      shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(20))),
+      shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(16))),
       builder: (_) => Padding(
-        padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom, left: 16, right: 16, top: 20),
+        padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom, left: 12, right: 12, top: 16),
         child: Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.start, children: [
           const Text('Suggest an Improvement', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
-          const SizedBox(height: 16),
+          const SizedBox(height: 12),
           TextField(
             controller: _titleCtrl,
             decoration: const InputDecoration(labelText: 'Title *', border: OutlineInputBorder()),
+            style: const TextStyle(fontSize: 14),
           ),
-          const SizedBox(height: 12),
+          const SizedBox(height: 10),
           TextField(
             controller: _descCtrl,
             decoration: const InputDecoration(labelText: 'Description (optional)', border: OutlineInputBorder()),
             maxLines: 3,
+            style: const TextStyle(fontSize: 14),
           ),
           const SizedBox(height: 16),
           SizedBox(
             width: double.infinity,
             child: ElevatedButton(
-              style: ElevatedButton.styleFrom(backgroundColor: Colors.blue.shade700),
+              style: ElevatedButton.styleFrom(backgroundColor: Colors.blue.shade700, foregroundColor: Colors.white),
               onPressed: submitting ? null : () { Navigator.pop(context); _submit(); },
-              child: const Text('Submit', style: TextStyle(color: Colors.white)),
+              child: const Text('Submit', style: TextStyle(fontWeight: FontWeight.bold)),
             ),
           ),
-          const SizedBox(height: 16),
+          const SizedBox(height: 12),
         ]),
       ),
     );
@@ -110,66 +112,68 @@ class _ImprovementsScreenState extends State<ImprovementsScreen> {
       floatingActionButton: FloatingActionButton.extended(
         backgroundColor: Colors.blue.shade700,
         onPressed: _showSubmitSheet,
-        icon: const Icon(Icons.add),
-        label: const Text('Suggest'),
+        icon: const Icon(Icons.add, color: Colors.white),
+        label: const Text('Suggest', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
       ),
       body: loading
           ? const Center(child: CircularProgressIndicator())
           : items.isEmpty
               ? Center(child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
-                  Icon(Icons.build_circle_outlined, size: 64, color: Colors.blue.shade200),
-                  const SizedBox(height: 16),
-                  const Text('No improvements yet', style: TextStyle(color: Colors.grey, fontSize: 16)),
-                  const SizedBox(height: 8),
-                  const Text('Tap + to suggest an improvement', style: TextStyle(color: Colors.grey)),
+                  Icon(Icons.build_circle_outlined, size: 60, color: Colors.blue.shade200),
+                  const SizedBox(height: 12),
+                  const Text('No improvements yet', style: TextStyle(color: Colors.grey, fontSize: 15)),
+                  const SizedBox(height: 6),
+                  const Text('Tap + to suggest an improvement', style: TextStyle(color: Colors.grey, fontSize: 13)),
                 ]))
-              : ListView.builder(
-                  padding: const EdgeInsets.fromLTRB(16, 16, 16, 88),
-                  itemCount: items.length,
-                  itemBuilder: (context, i) {
-                    final item = items[i];
-                    final status = item['status']?.toString() ?? 'PENDING';
-                    final statusColor = status == 'DONE' ? Colors.green
-                        : status == 'IN_PROGRESS' ? Colors.blue
-                        : Colors.orange;
-                    return Card(
-                      margin: const EdgeInsets.only(bottom: 10),
-                      child: Padding(
-                        padding: const EdgeInsets.all(14),
-                        child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                          Row(children: [
-                            Expanded(child: Text(item['title']?.toString() ?? '',
-                                style: const TextStyle(fontWeight: FontWeight.w700, fontSize: 14))),
-                            Container(
-                              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
-                              decoration: BoxDecoration(
-                                color: statusColor.withOpacity(0.1),
-                                borderRadius: BorderRadius.circular(8),
+              : RefreshIndicator(
+                  onRefresh: _load,
+                  child: ListView.builder(
+                    padding: const EdgeInsets.fromLTRB(4, 12, 4, 88),
+                    itemCount: items.length,
+                    itemBuilder: (context, i) {
+                      final item = items[i];
+                      final status = item['status']?.toString() ?? 'PENDING';
+                      final statusColor = status == 'DONE' ? Colors.green
+                          : status == 'IN_PROGRESS' ? Colors.blue
+                          : Colors.orange;
+                      return Card(
+                        margin: const EdgeInsets.only(bottom: 6, left: 2, right: 2),
+                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                        child: Padding(
+                          padding: const EdgeInsets.all(12),
+                          child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                            Row(children: [
+                              Expanded(child: Text(item['title']?.toString() ?? '',
+                                  style: const TextStyle(fontWeight: FontWeight.w700, fontSize: 14))),
+                              Container(
+                                padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                                decoration: BoxDecoration(
+                                  color: statusColor.withOpacity(0.1),
+                                  borderRadius: BorderRadius.circular(6),
+                                ),
+                                child: Text(status, style: TextStyle(fontSize: 9, color: statusColor, fontWeight: FontWeight.bold)),
                               ),
-                              child: Text(status, style: TextStyle(fontSize: 11, color: statusColor, fontWeight: FontWeight.bold)),
-                            ),
+                            ]),
+                            if (item['description'] != null && item['description'].toString().isNotEmpty) ...[
+                              const SizedBox(height: 4),
+                              Text(item['description'].toString(), style: const TextStyle(fontSize: 12, color: Colors.grey)),
+                            ],
+                            const SizedBox(height: 8),
+                            Row(children: [
+                              Icon(Icons.person_outline, size: 12, color: Colors.grey.shade500),
+                              const SizedBox(width: 4),
+                              Text(item['submittedBy']?.toString() ?? item['userName']?.toString() ?? 'Staff',
+                                  style: TextStyle(fontSize: 11, color: Colors.grey.shade600)),
+                              const Spacer(),
+                              Text(_formatDate(item['createdAt'] ?? item['date']),
+                                  style: TextStyle(fontSize: 10, color: Colors.grey.shade500)),
+                            ]),
                           ]),
-                          if (item['description'] != null && item['description'].toString().isNotEmpty) ...[
-                            const SizedBox(height: 6),
-                            Text(item['description'].toString(), style: const TextStyle(fontSize: 13, color: Colors.grey)),
-                          ],
-                          const SizedBox(height: 8),
-                          Row(children: [
-                            Icon(Icons.person_outline, size: 13, color: Colors.grey.shade500),
-                            const SizedBox(width: 4),
-                            Text(item['submittedBy']?.toString() ?? item['userName']?.toString() ?? 'Staff',
-                                style: TextStyle(fontSize: 12, color: Colors.grey.shade600)),
-                            const Spacer(),
-                            Text(_formatDate(item['createdAt'] ?? item['date']),
-                                style: TextStyle(fontSize: 11, color: Colors.grey.shade500)),
-                          ]),
-                        ]),
-                      ),
-                    );
-                  },
+                        ),
+                      );
+                    },
+                  ),
                 ),
     );
   }
 }
-
-

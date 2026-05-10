@@ -109,21 +109,21 @@ class _ShopDetailScreenState extends State<ShopDetailScreen> {
     showDialog(
       context: context,
       builder: (_) => AlertDialog(
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
         title: Row(children: [
           Container(
-            padding: const EdgeInsets.all(8),
+            padding: const EdgeInsets.all(6),
             decoration: BoxDecoration(color: Colors.orange.shade50, borderRadius: BorderRadius.circular(8)),
-            child: Icon(Icons.warning_amber_rounded, color: Colors.orange.shade700, size: 28),
+            child: Icon(Icons.warning_amber_rounded, color: Colors.orange.shade700, size: 24),
           ),
-          const SizedBox(width: 12),
-          const Text('Warning', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+          const SizedBox(width: 10),
+          const Text('Warning', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
         ]),
-        content: Text(msg),
+        content: Text(msg, style: const TextStyle(fontSize: 14)),
         actions: [
           ElevatedButton(
             onPressed: () => Navigator.pop(context),
-            style: ElevatedButton.styleFrom(backgroundColor: Colors.orange, foregroundColor: Colors.white),
+            style: ElevatedButton.styleFrom(backgroundColor: Colors.orange, foregroundColor: Colors.white, minimumSize: const Size(80, 36)),
             child: const Text('OK'),
           ),
         ],
@@ -147,8 +147,8 @@ class _ShopDetailScreenState extends State<ShopDetailScreen> {
     final result = await showDialog<bool>(
       context: context,
       builder: (_) => AlertDialog(
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-        title: Text(isUpdating ? 'Update Opening Balance' : 'Add Start'),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+        title: Text(isUpdating ? 'Update Opening Balance' : 'Add Start', style: const TextStyle(fontSize: 18)),
         content: SingleChildScrollView(
           child: Column(mainAxisSize: MainAxisSize.min, children: [
             if (isUpdating)
@@ -157,7 +157,7 @@ class _ShopDetailScreenState extends State<ShopDetailScreen> {
             if (!isUpdating && suggested > 0)
               _infoBox(Colors.blue, Icons.info_outline, "Previous Day's Closing",
                   '${DateFormat('MMM d').format(prevDate)} closing: Rs ${suggested.toStringAsFixed(2)}\nPre-filled as your opening balance'),
-            const SizedBox(height: 12),
+            const SizedBox(height: 10),
             TextField(
               controller: ctrl,
               autofocus: true,
@@ -194,8 +194,8 @@ class _ShopDetailScreenState extends State<ShopDetailScreen> {
     final result = await showDialog<bool>(
       context: context,
       builder: (_) => AlertDialog(
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-        title: const Text('Add End'),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+        title: const Text('Add End', style: TextStyle(fontSize: 18)),
         content: TextField(
           controller: ctrl,
           autofocus: true,
@@ -253,15 +253,16 @@ class _ShopDetailScreenState extends State<ShopDetailScreen> {
               initialValue: selectedType,
               decoration: InputDecoration(
                 labelText: 'Expense Type *',
-                border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
-                prefixIcon: const Icon(Icons.category),
+                border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
+                prefixIcon: const Icon(Icons.category, size: 20),
+                contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
               ),
-              items: types.map((t) => DropdownMenuItem(value: t, child: Text(t['name'] ?? ''))).toList(),
+              items: types.map((t) => DropdownMenuItem(value: t, child: Text(t['name'] ?? '', style: const TextStyle(fontSize: 14)))).toList(),
               onChanged: (v) => ss(() => selectedType = v),
             ),
-            const SizedBox(height: 16),
+            const SizedBox(height: 12),
             _amountField(amtCtrl),
-            const SizedBox(height: 16),
+            const SizedBox(height: 12),
             _descField(descCtrl),
           ]),
         ),
@@ -296,7 +297,7 @@ class _ShopDetailScreenState extends State<ShopDetailScreen> {
         submitLabel: 'Add Sale',
         child: Column(children: [
           _amountField(amtCtrl),
-          const SizedBox(height: 16),
+          const SizedBox(height: 12),
           _descField(descCtrl, hint: 'e.g., Cash sale, Card sale'),
         ]),
       ),
@@ -338,15 +339,16 @@ class _ShopDetailScreenState extends State<ShopDetailScreen> {
               initialValue: selectedUser,
               decoration: InputDecoration(
                 labelText: 'User *',
-                border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
-                prefixIcon: const Icon(Icons.person),
+                border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
+                prefixIcon: const Icon(Icons.person, size: 20),
+                contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
               ),
-              items: users.map((u) => DropdownMenuItem(value: u, child: Text(u['name'] ?? ''))).toList(),
+              items: users.map((u) => DropdownMenuItem(value: u, child: Text(u['name'] ?? '', style: const TextStyle(fontSize: 14)))).toList(),
               onChanged: (v) => ss(() => selectedUser = v),
             ),
-            const SizedBox(height: 16),
+            const SizedBox(height: 12),
             _amountField(amtCtrl),
-            const SizedBox(height: 16),
+            const SizedBox(height: 12),
             _descField(reasonCtrl, label: 'Reason *', hint: 'e.g., Advance, Loan'),
           ]),
         ),
@@ -371,12 +373,12 @@ class _ShopDetailScreenState extends State<ShopDetailScreen> {
       builder: (_) => StatefulBuilder(
         builder: (ctx, ss) => AlertDialog(
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
-          title: const Text('Edit Expense'),
+          title: const Text('Edit Expense', style: TextStyle(fontSize: 18)),
           content: SingleChildScrollView(child: Column(mainAxisSize: MainAxisSize.min, children: [
             DropdownButtonFormField<Map<String, dynamic>>(
               initialValue: sel,
               decoration: const InputDecoration(labelText: 'Expense Type *'),
-              items: types.map((t) => DropdownMenuItem(value: t, child: Text(t['name'] ?? ''))).toList(),
+              items: types.map((t) => DropdownMenuItem(value: t, child: Text(t['name'] ?? '', style: const TextStyle(fontSize: 14)))).toList(),
               onChanged: (v) => ss(() => sel = v),
             ),
             const SizedBox(height: 12),
@@ -425,7 +427,7 @@ class _ShopDetailScreenState extends State<ShopDetailScreen> {
       context: context,
       builder: (_) => AlertDialog(
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
-        title: const Text('Edit Sale'),
+        title: const Text('Edit Sale', style: TextStyle(fontSize: 18)),
         content: Column(mainAxisSize: MainAxisSize.min, children: [
           _amountField(amtCtrl),
           const SizedBox(height: 12),
@@ -472,14 +474,14 @@ class _ShopDetailScreenState extends State<ShopDetailScreen> {
       builder: (_) => StatefulBuilder(
         builder: (ctx, ss) => AlertDialog(
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
-          title: const Text('Edit Credit'),
+          title: const Text('Edit Credit', style: TextStyle(fontSize: 18)),
           content: SingleChildScrollView(child: Column(mainAxisSize: MainAxisSize.min, children: [
             _amountField(amtCtrl),
             const SizedBox(height: 12),
             _descField(reasonCtrl, label: 'Reason *'),
             const SizedBox(height: 4),
             CheckboxListTile(
-              title: const Text('Paid'),
+              title: const Text('Paid', style: TextStyle(fontSize: 14)),
               value: isPaid,
               onChanged: (v) => ss(() => isPaid = v ?? false),
               contentPadding: EdgeInsets.zero,
@@ -539,23 +541,23 @@ class _ShopDetailScreenState extends State<ShopDetailScreen> {
     required VoidCallback onSubmit, required String submitLabel, required Widget child,
   }) {
     return Dialog(
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
       child: Container(
         constraints: const BoxConstraints(maxWidth: 500),
-        padding: const EdgeInsets.all(20),
+        padding: const EdgeInsets.all(16),
         child: Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.stretch, children: [
           Row(children: [
             Container(
-              padding: const EdgeInsets.all(10),
-              decoration: BoxDecoration(color: color.withValues(alpha: 0.1), borderRadius: BorderRadius.circular(10)),
-              child: Icon(icon, color: color, size: 26),
+              padding: const EdgeInsets.all(8),
+              decoration: BoxDecoration(color: color.withValues(alpha: 0.1), borderRadius: BorderRadius.circular(8)),
+              child: Icon(icon, color: color, size: 24),
             ),
-            const SizedBox(width: 14),
-            Text(title, style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+            const SizedBox(width: 12),
+            Text(title, style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
           ]),
-          const SizedBox(height: 20),
+          const SizedBox(height: 16),
           SingleChildScrollView(child: child),
-          const SizedBox(height: 20),
+          const SizedBox(height: 16),
           Row(children: [
             Expanded(
               child: OutlinedButton(
@@ -581,8 +583,10 @@ class _ShopDetailScreenState extends State<ShopDetailScreen> {
     controller: ctrl, autofocus: true,
     decoration: InputDecoration(
       labelText: 'Amount *', prefixText: 'Rs ',
-      border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
+      border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
+      contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
     ),
+    style: const TextStyle(fontSize: 14),
     keyboardType: const TextInputType.numberWithOptions(decimal: true),
   );
 
@@ -591,28 +595,30 @@ class _ShopDetailScreenState extends State<ShopDetailScreen> {
     controller: ctrl, maxLines: 2,
     decoration: InputDecoration(
       labelText: label, hintText: hint,
-      border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
-      prefixIcon: const Icon(Icons.notes),
+      border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
+      prefixIcon: const Icon(Icons.notes, size: 20),
+      contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
     ),
+    style: const TextStyle(fontSize: 14),
   );
 
   Widget _infoBox(Color color, IconData icon, String title, String body) {
     return Container(
-      margin: const EdgeInsets.only(bottom: 10),
-      padding: const EdgeInsets.all(10),
+      margin: const EdgeInsets.only(bottom: 8),
+      padding: const EdgeInsets.all(8),
       decoration: BoxDecoration(
         color: color.withValues(alpha: 0.06),
-        borderRadius: BorderRadius.circular(8),
-        border: Border.all(color: color.withValues(alpha: 0.3)),
+        borderRadius: BorderRadius.circular(6),
+        border: Border.all(color: color.withValues(alpha: 0.2)),
       ),
       child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
         Row(children: [
-          Icon(icon, color: color, size: 15),
+          Icon(icon, color: color, size: 14),
           const SizedBox(width: 6),
-          Text(title, style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: color)),
+          Text(title, style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: color)),
         ]),
         const SizedBox(height: 4),
-        Text(body, style: const TextStyle(fontSize: 11)),
+        Text(body, style: const TextStyle(fontSize: 10.5)),
       ]),
     );
   }
@@ -633,15 +639,17 @@ class _ShopDetailScreenState extends State<ShopDetailScreen> {
                 onRefresh: _loadDailyCash,
                 child: SingleChildScrollView(
                   physics: const AlwaysScrollableScrollPhysics(),
-                  padding: const EdgeInsets.fromLTRB(14, 14, 14, 80),
+                  padding: const EdgeInsets.fromLTRB(4, 12, 4, 80),
                   child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
                     // ── Date Navigation ──────────────────────────────────────
                     Card(
+                      margin: const EdgeInsets.symmetric(horizontal: 2),
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
                       child: Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 4),
+                        padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 2),
                         child: Row(children: [
                           IconButton(
-                            icon: const Icon(Icons.arrow_back_ios, size: 16),
+                            icon: const Icon(Icons.arrow_back_ios, size: 14),
                             padding: EdgeInsets.zero,
                             constraints: const BoxConstraints(),
                             onPressed: () {
@@ -651,14 +659,14 @@ class _ShopDetailScreenState extends State<ShopDetailScreen> {
                           ),
                           Expanded(
                             child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-                              const Icon(Icons.calendar_today, size: 13),
+                              const Icon(Icons.calendar_today, size: 12),
                               const SizedBox(width: 6),
                               Text(DateFormat('MMM d, y').format(selectedDate),
                                   style: const TextStyle(fontSize: 14, fontWeight: FontWeight.bold)),
                             ]),
                           ),
                           IconButton(
-                            icon: const Icon(Icons.arrow_forward_ios, size: 16),
+                            icon: const Icon(Icons.arrow_forward_ios, size: 14),
                             padding: EdgeInsets.zero,
                             constraints: const BoxConstraints(),
                             onPressed: () {
@@ -669,82 +677,100 @@ class _ShopDetailScreenState extends State<ShopDetailScreen> {
                         ]),
                       ),
                     ),
-                    const SizedBox(height: 10),
+                    const SizedBox(height: 8),
 
                     // ── Add Start / Add End ──────────────────────────────────
-                    Row(children: [
-                      Expanded(
-                        child: Builder(builder: (_) {
-                          final hasNoCash = dailyCashData == null || dailyCashData!['dailyCashId'] == null;
-                          final isLocked = dailyCashData?['locked'] == true || dailyCashData?['locked'] == 1;
-                          final enabled = (hasNoCash || !isLocked) && canEdit;
-                          final suggested = _getSuggestedOpening();
-                          return ElevatedButton.icon(
-                            onPressed: enabled ? _openCash : null,
-                            icon: const Icon(Icons.play_arrow, size: 18),
-                            label: Text(suggested > 0 ? 'Rs ${suggested.toStringAsFixed(2)}' : 'Add Start',
-                                style: const TextStyle(fontSize: 13)),
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: Colors.blue, foregroundColor: Colors.white,
-                              padding: const EdgeInsets.symmetric(vertical: 10),
-                              disabledBackgroundColor: Colors.grey.shade400,
-                              disabledForegroundColor: Colors.white,
-                            ),
-                          );
-                        }),
-                      ),
-                      const SizedBox(width: 10),
-                      Expanded(
-                        child: Builder(builder: (_) {
-                          final isLocked = dailyCashData?['locked'] == true || dailyCashData?['locked'] == 1;
-                          final enabled = dailyCashData != null && canEdit && !isLocked;
-                          final closing = _getClosingBalance();
-                          return ElevatedButton.icon(
-                            onPressed: enabled ? _closeCash : null,
-                            icon: const Icon(Icons.stop, size: 18),
-                            label: Text(closing > 0 ? 'Rs ${closing.toStringAsFixed(2)}' : 'Add End',
-                                style: const TextStyle(fontSize: 13)),
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: Colors.purple, foregroundColor: Colors.white,
-                              padding: const EdgeInsets.symmetric(vertical: 10),
-                              disabledBackgroundColor: Colors.purple.shade200,
-                              disabledForegroundColor: Colors.white,
-                            ),
-                          );
-                        }),
-                      ),
-                    ]),
-                    const SizedBox(height: 12),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 2),
+                      child: Row(children: [
+                        Expanded(
+                          child: Builder(builder: (_) {
+                            final hasNoCash = dailyCashData == null || dailyCashData!['dailyCashId'] == null;
+                            final isLocked = dailyCashData?['locked'] == true || dailyCashData?['locked'] == 1;
+                            final enabled = (hasNoCash || !isLocked) && canEdit;
+                            final suggested = _getSuggestedOpening();
+                            return ElevatedButton.icon(
+                              onPressed: enabled ? _openCash : null,
+                              icon: const Icon(Icons.play_arrow, size: 16),
+                              label: Text(suggested > 0 ? 'Rs ${NumberFormat('#,##0').format(suggested)}' : 'Add Start',
+                                  style: const TextStyle(fontSize: 12)),
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: Colors.blue, foregroundColor: Colors.white,
+                                padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 8),
+                                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                                disabledBackgroundColor: Colors.grey.shade400,
+                                disabledForegroundColor: Colors.white,
+                              ),
+                            );
+                          }),
+                        ),
+                        const SizedBox(width: 6),
+                        Expanded(
+                          child: Builder(builder: (_) {
+                            final isLocked = dailyCashData?['locked'] == true || dailyCashData?['locked'] == 1;
+                            final enabled = dailyCashData != null && canEdit && !isLocked;
+                            final closing = _getClosingBalance();
+                            return ElevatedButton.icon(
+                              onPressed: enabled ? _closeCash : null,
+                              icon: const Icon(Icons.stop, size: 16),
+                              label: Text(closing > 0 ? 'Rs ${NumberFormat('#,##0').format(closing)}' : 'Add End',
+                                  style: const TextStyle(fontSize: 12)),
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: Colors.purple, foregroundColor: Colors.white,
+                                padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 8),
+                                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                                disabledBackgroundColor: Colors.purple.shade200,
+                                disabledForegroundColor: Colors.white,
+                              ),
+                            );
+                          }),
+                        ),
+                      ]),
+                    ),
+                    const SizedBox(height: 10),
 
                     // ── Summary ──────────────────────────────────────────────
                     if (dailyCashData != null) ...[
-                      _buildSummaryCard(),
-                      const SizedBox(height: 12),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 2),
+                        child: _buildSummaryCard(),
+                      ),
+                      const SizedBox(height: 10),
 
                       // ── Action Buttons ───────────────────────────────────
-                      // ── Action Buttons (ADMIN / SUPERADMIN only) ─────────
                       if (canEdit)
-                        Row(children: [
-                          _actionBtn('Expense', Icons.remove_circle, Colors.red,
-                              canEdit ? _addExpense : null),
-                          const SizedBox(width: 8),
-                          _actionBtn('Credit', Icons.credit_card, Colors.orange,
-                              canEdit ? _addCredit : null),
-                          const SizedBox(width: 8),
-                          _actionBtn('Sale', Icons.add_circle, Colors.green,
-                              canEdit ? _addSale : null),
-                        ]),
-                      const SizedBox(height: 14),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 2),
+                          child: Row(children: [
+                            _actionBtn('Expense', Icons.remove_circle, Colors.red,
+                                canEdit ? _addExpense : null),
+                            const SizedBox(width: 6),
+                            _actionBtn('Credit', Icons.credit_card, Colors.orange,
+                                canEdit ? _addCredit : null),
+                            const SizedBox(width: 6),
+                            _actionBtn('Sale', Icons.add_circle, Colors.green,
+                                canEdit ? _addSale : null),
+                          ]),
+                        ),
+                      const SizedBox(height: 12),
 
                       // ── Transactions ─────────────────────────────────────
-                      const Text('Transactions',
-                          style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-                      const SizedBox(height: 10),
-                      _buildTransactionsList('Expenses', dailyCashData!['expenses'] ?? []),
-                      const SizedBox(height: 10),
-                      _buildTransactionsList('Credits', dailyCashData!['credits'] ?? []),
-                      const SizedBox(height: 10),
-                      _buildTransactionsList('Sales', dailyCashData!['sales'] ?? []),
+                      const Padding(
+                        padding: EdgeInsets.only(left: 4),
+                        child: Text('Transactions',
+                            style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+                      ),
+                      const SizedBox(height: 8),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 2),
+                        child: Column(children: [
+                          _buildTransactionsList('Expenses', dailyCashData!['expenses'] ?? []),
+                          const SizedBox(height: 8),
+                          _buildTransactionsList('Credits', dailyCashData!['credits'] ?? []),
+                          const SizedBox(height: 8),
+                          _buildTransactionsList('Sales', dailyCashData!['sales'] ?? []),
+                        ]),
+                      ),
                     ] else
                       Center(
                         child: Padding(
@@ -766,14 +792,15 @@ class _ShopDetailScreenState extends State<ShopDetailScreen> {
         onPressed: onTap,
         style: ElevatedButton.styleFrom(
           backgroundColor: color, foregroundColor: Colors.white,
-          padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 6),
+          padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 4),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
           disabledBackgroundColor: color.withValues(alpha: 0.4),
           disabledForegroundColor: Colors.white,
         ),
         child: Row(mainAxisSize: MainAxisSize.min, children: [
-          Icon(icon, size: 16),
+          Icon(icon, size: 14),
           const SizedBox(width: 4),
-          Text(label, style: const TextStyle(fontSize: 12)),
+          Text(label, style: const TextStyle(fontSize: 11)),
         ]),
       ),
     );
@@ -801,33 +828,35 @@ class _ShopDetailScreenState extends State<ShopDetailScreen> {
 
     return Card(
       color: Colors.blue.shade50,
+      elevation: 1,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
       child: Padding(
-        padding: const EdgeInsets.all(12),
+        padding: const EdgeInsets.all(10),
         child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-          const Text('Summary', style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold)),
-          const Divider(height: 12),
-          _summaryRow('Opening Balance', 'Rs ${opening.toStringAsFixed(2)}', Colors.blue),
-          _summaryRow('Ending Balance',  'Rs ${closing.toStringAsFixed(2)}',  Colors.purple),
-          _summaryRow('Total Sales',     'Rs ${sales.toStringAsFixed(2)}',    Colors.green),
+          const Text('Summary', style: TextStyle(fontSize: 13, fontWeight: FontWeight.bold)),
+          const Divider(height: 10),
+          _summaryRow('Opening Balance', 'Rs ${NumberFormat('#,##0').format(opening)}', Colors.blue),
+          _summaryRow('Ending Balance',  'Rs ${NumberFormat('#,##0').format(closing)}',  Colors.purple),
+          _summaryRow('Total Sales',     'Rs ${NumberFormat('#,##0').format(sales)}',    Colors.green),
           if (hasShortfall)
             Container(
-              margin: const EdgeInsets.symmetric(vertical: 6),
-              padding: const EdgeInsets.all(8),
+              margin: const EdgeInsets.symmetric(vertical: 4),
+              padding: const EdgeInsets.all(6),
               decoration: BoxDecoration(
                 color: Colors.orange.withValues(alpha: 0.1),
                 borderRadius: BorderRadius.circular(6),
               ),
               child: Row(children: [
-                const Icon(Icons.warning_amber, color: Colors.orange, size: 18),
-                const SizedBox(width: 8),
+                const Icon(Icons.warning_amber, color: Colors.orange, size: 14),
+                const SizedBox(width: 6),
                 Expanded(child: Text(
-                  'Cash Shortfall: Rs ${shortfall.toStringAsFixed(2)}',
-                  style: const TextStyle(fontSize: 12, color: Colors.orange, fontWeight: FontWeight.w600),
+                  'Cash Shortfall: Rs ${NumberFormat('#,##0').format(shortfall)}',
+                  style: const TextStyle(fontSize: 11, color: Colors.orange, fontWeight: FontWeight.w600),
                 )),
               ]),
             ),
-          _summaryRow('Total Expenses', 'Rs ${expenses.toStringAsFixed(2)}', Colors.red),
-          _summaryRow('Total Credits',  'Rs ${credits.toStringAsFixed(2)}',  Colors.orange),
+          _summaryRow('Total Expenses', 'Rs ${NumberFormat('#,##0').format(expenses)}', Colors.red),
+          _summaryRow('Total Credits',  'Rs ${NumberFormat('#,##0').format(credits)}',  Colors.orange),
         ]),
       ),
     );
@@ -835,10 +864,10 @@ class _ShopDetailScreenState extends State<ShopDetailScreen> {
 
   Widget _summaryRow(String label, String value, Color color) {
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 3),
+      padding: const EdgeInsets.symmetric(vertical: 2),
       child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-        Text(label, style: const TextStyle(fontSize: 14, color: Colors.black87)),
-        Text(value, style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: color)),
+        Text(label, style: const TextStyle(fontSize: 13, color: Colors.black87)),
+        Text(value, style: TextStyle(fontSize: 13, fontWeight: FontWeight.bold, color: color)),
       ]),
     );
   }
@@ -857,15 +886,17 @@ class _ShopDetailScreenState extends State<ShopDetailScreen> {
 
     return Card(
       margin: EdgeInsets.zero,
+      elevation: 0.5,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
       child: Padding(
-        padding: const EdgeInsets.all(10),
+        padding: const EdgeInsets.all(8),
         child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-          Text(title, style: const TextStyle(fontSize: 14, fontWeight: FontWeight.bold)),
-          const Divider(height: 10),
+          Text(title, style: const TextStyle(fontSize: 13, fontWeight: FontWeight.bold)),
+          const Divider(height: 8),
           if (sorted.isEmpty)
             Padding(
-              padding: const EdgeInsets.all(4),
-              child: Text('No $title yet', style: TextStyle(fontSize: 13, color: Colors.grey.shade600)),
+              padding: const EdgeInsets.all(2),
+              child: Text('No $title yet', style: TextStyle(fontSize: 12, color: Colors.grey.shade600)),
             )
           else
             ...sorted.map((txn) {
@@ -891,26 +922,26 @@ class _ShopDetailScreenState extends State<ShopDetailScreen> {
               }
 
               return Padding(
-                padding: const EdgeInsets.symmetric(vertical: 5),
+                padding: const EdgeInsets.symmetric(vertical: 4),
                 child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
                   Padding(
-                    padding: const EdgeInsets.only(top: 2, right: 8),
-                    child: Icon(icon, color: color, size: 16),
+                    padding: const EdgeInsets.only(top: 1, right: 6),
+                    child: Icon(icon, color: color, size: 14),
                   ),
                   Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                    Text(mainText, style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w500),
+                    Text(mainText, style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w500),
                         maxLines: 2, overflow: TextOverflow.ellipsis),
                     if (subText != null && subText.isNotEmpty)
-                      Text(subText, style: TextStyle(fontSize: 11, color: Colors.grey.shade600),
+                      Text(subText, style: TextStyle(fontSize: 10.5, color: Colors.grey.shade600),
                           maxLines: 2, overflow: TextOverflow.ellipsis),
                   ])),
-                  Text('Rs ${(txn['amount'] ?? 0.0).toStringAsFixed(2)}',
-                      style: TextStyle(fontSize: 13, fontWeight: FontWeight.bold, color: color)),
+                  Text('Rs ${NumberFormat('#,##0').format(txn['amount'] ?? 0)}',
+                      style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: color)),
                   if (isAdminEdit) ...[
                     const SizedBox(width: 2),
-                    SizedBox(width: 28, height: 28,
+                    SizedBox(width: 26, height: 26,
                       child: IconButton(
-                        icon: const Icon(Icons.edit, size: 14), color: Colors.blue,
+                        icon: const Icon(Icons.edit, size: 12), color: Colors.blue,
                         padding: EdgeInsets.zero, constraints: const BoxConstraints(),
                         onPressed: () {
                           if (isExpense) _editExpense(txn);
@@ -919,9 +950,9 @@ class _ShopDetailScreenState extends State<ShopDetailScreen> {
                         },
                       ),
                     ),
-                    SizedBox(width: 28, height: 28,
+                    SizedBox(width: 26, height: 26,
                       child: IconButton(
-                        icon: const Icon(Icons.delete, size: 14), color: Colors.red,
+                        icon: const Icon(Icons.delete, size: 12), color: Colors.red,
                         padding: EdgeInsets.zero, constraints: const BoxConstraints(),
                         onPressed: () {
                           if (isExpense) _deleteExpense(txn);
@@ -939,4 +970,3 @@ class _ShopDetailScreenState extends State<ShopDetailScreen> {
     );
   }
 }
-

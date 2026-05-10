@@ -92,13 +92,16 @@ class _PinScreenState extends State<PinScreen> {
       body: SafeArea(
         child: Column(
           children: [
-            const SizedBox(height: 60),
+            const SizedBox(height: 40),
             const Icon(Icons.lock_rounded, size: 48, color: Colors.white),
-            const SizedBox(height: 20),
+            const SizedBox(height: 16),
             Text(title, style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: Colors.white)),
             const SizedBox(height: 8),
-            Text(subtitle, style: TextStyle(color: Colors.white.withOpacity(0.8), fontSize: 14), textAlign: TextAlign.center),
-            const SizedBox(height: 40),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20),
+              child: Text(subtitle, style: TextStyle(color: Colors.white.withOpacity(0.8), fontSize: 14), textAlign: TextAlign.center),
+            ),
+            const SizedBox(height: 32),
 
             // PIN dots
             Row(
@@ -113,11 +116,11 @@ class _PinScreenState extends State<PinScreen> {
                 ),
               )),
             ),
-            const SizedBox(height: 16),
+            const SizedBox(height: 20),
 
             if (_error != null)
               Container(
-                margin: const EdgeInsets.symmetric(horizontal: 40),
+                margin: const EdgeInsets.symmetric(horizontal: 20),
                 padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
                 decoration: BoxDecoration(
                   color: Colors.red.shade700,
@@ -130,26 +133,27 @@ class _PinScreenState extends State<PinScreen> {
 
             // Keypad
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 60),
+              padding: const EdgeInsets.symmetric(horizontal: 16),
               child: Column(
                 children: [
                   _buildRow(['1', '2', '3']),
-                  const SizedBox(height: 12),
+                  const SizedBox(height: 16),
                   _buildRow(['4', '5', '6']),
-                  const SizedBox(height: 12),
+                  const SizedBox(height: 16),
                   _buildRow(['7', '8', '9']),
-                  const SizedBox(height: 12),
+                  const SizedBox(height: 16),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
-                      const SizedBox(width: 72),
+                      const SizedBox(width: 80),
                       _buildKey('0'),
                       SizedBox(
-                        width: 72,
-                        height: 72,
-                        child: TextButton(
-                          onPressed: _onDelete,
-                          child: const Icon(Icons.backspace_outlined, color: Colors.white, size: 26),
+                        width: 80,
+                        height: 80,
+                        child: InkWell(
+                          onTap: _onDelete,
+                          borderRadius: BorderRadius.circular(40),
+                          child: const Icon(Icons.backspace_outlined, color: Colors.white, size: 28),
                         ),
                       ),
                     ],
@@ -158,13 +162,13 @@ class _PinScreenState extends State<PinScreen> {
               ),
             ),
 
-            const SizedBox(height: 20),
+            const SizedBox(height: 24),
             if (!widget.isSetup)
               TextButton(
                 onPressed: _logout,
                 child: Text('Logout', style: TextStyle(color: Colors.white.withOpacity(0.7))),
               ),
-            const SizedBox(height: 30),
+            const SizedBox(height: 20),
           ],
         ),
       ),
@@ -181,21 +185,20 @@ class _PinScreenState extends State<PinScreen> {
   Widget _buildKey(String digit) {
     return InkWell(
       onTap: () => _onKey(digit),
-      borderRadius: BorderRadius.circular(36),
+      borderRadius: BorderRadius.circular(40),
       child: Container(
-        width: 72,
-        height: 72,
+        width: 80,
+        height: 80,
         decoration: BoxDecoration(
           shape: BoxShape.circle,
-          color: Colors.white.withOpacity(0.15),
+          color: Colors.white.withOpacity(0.12),
         ),
         alignment: Alignment.center,
         child: Text(
           digit,
-          style: const TextStyle(fontSize: 26, fontWeight: FontWeight.bold, color: Colors.white),
+          style: const TextStyle(fontSize: 28, fontWeight: FontWeight.bold, color: Colors.white),
         ),
       ),
     );
   }
 }
-

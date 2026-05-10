@@ -116,21 +116,21 @@ class _FoodHutMainScreenState extends State<FoodHutMainScreen> {
               onRefresh: _load,
               color: _green,
               child: ListView(
-                padding: const EdgeInsets.all(16),
+                padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 12),
                 children: [
                   // Date Row
                   Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
                     decoration: BoxDecoration(
                       color: Colors.white,
-                      borderRadius: BorderRadius.circular(16),
+                      borderRadius: BorderRadius.circular(12),
                       border: Border.all(color: _green.withValues(alpha: 0.3), width: 1.5),
                     ),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         IconButton(
-                          icon: const Icon(Icons.chevron_left, color: _green),
+                          icon: const Icon(Icons.chevron_left, color: _green, size: 20),
                           onPressed: () {
                             setState(() { selectedDate = selectedDate.subtract(const Duration(days: 1)); loading = true; });
                             _load();
@@ -138,14 +138,14 @@ class _FoodHutMainScreenState extends State<FoodHutMainScreen> {
                         ),
                         Row(
                           children: [
-                            const Icon(Icons.calendar_today, size: 16, color: _green),
-                            const SizedBox(width: 8),
+                            const Icon(Icons.calendar_today, size: 14, color: _green),
+                            const SizedBox(width: 6),
                             Text(_formatDate(selectedDate),
-                                style: const TextStyle(fontWeight: FontWeight.w700, fontSize: 15)),
+                                style: const TextStyle(fontWeight: FontWeight.w700, fontSize: 14)),
                           ],
                         ),
                         IconButton(
-                          icon: Icon(Icons.chevron_right, color: _isToday ? Colors.grey : _green),
+                          icon: Icon(Icons.chevron_right, color: _isToday ? Colors.grey : _green, size: 20),
                           onPressed: _isToday ? null : () {
                             setState(() { selectedDate = selectedDate.add(const Duration(days: 1)); loading = true; });
                             _load();
@@ -154,35 +154,38 @@ class _FoodHutMainScreenState extends State<FoodHutMainScreen> {
                       ],
                     ),
                   ),
-                  const SizedBox(height: 16),
+                  const SizedBox(height: 12),
 
                   // Summary Cards
                   Row(
                     children: [
                       Expanded(child: _summaryCard('Prepared', _preparedQty, preparedAmount, Icons.restaurant_menu, _green)),
-                      const SizedBox(width: 8),
+                      const SizedBox(width: 4),
                       Expanded(child: _summaryCard('Sold',     _soldQty,     soldAmount,     Icons.trending_up,     _blue)),
-                      const SizedBox(width: 8),
+                      const SizedBox(width: 4),
                       Expanded(child: _summaryCard('Remaining',_remainingQty,remainingAmount,Icons.inventory_2_outlined, _orange)),
                     ],
                   ),
-                  const SizedBox(height: 20),
+                  const SizedBox(height: 16),
 
                   // Action Buttons
                   _actionButton('Add Prepared Item', Icons.add_circle_outline, _green,
                       enabled: _isToday, onTap: () => _showSnack('Add Prepared — opening soon')),
-                  const SizedBox(height: 12),
+                  const SizedBox(height: 8),
                   _actionButton('Add Remaining Item', Icons.inventory_2_outlined, _orange,
                       enabled: _isToday, onTap: () => _showSnack('Add Remaining — opening soon')),
-                  const SizedBox(height: 12),
+                  const SizedBox(height: 8),
                   _actionButton('View Menu Items', Icons.restaurant_menu, const Color(0xFF7007B6),
                       onTap: () => _showSnack('Menu items — opening soon')),
-                  const SizedBox(height: 20),
+                  const SizedBox(height: 16),
 
                   // Sales List
                   if (sales.isNotEmpty) ...[
-                    const Text('Today\'s Entries', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
-                    const SizedBox(height: 8),
+                    const Padding(
+                      padding: EdgeInsets.only(left: 4),
+                      child: Text('Today\'s Entries', style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold)),
+                    ),
+                    const SizedBox(height: 6),
                     ...sales.map((s) => _SaleTile(sale: s)),
                   ],
                 ],
@@ -197,19 +200,19 @@ class _FoodHutMainScreenState extends State<FoodHutMainScreen> {
 
   Widget _summaryCard(String label, int qty, int amount, IconData icon, Color color) {
     return Container(
-      padding: const EdgeInsets.all(10),
+      padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 4),
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: BorderRadius.circular(12),
         border: Border.all(color: color, width: 2),
       ),
       child: Column(
         children: [
-          Icon(icon, color: color, size: 22),
+          Icon(icon, color: color, size: 20),
           const SizedBox(height: 4),
-          Text(label, style: TextStyle(fontSize: 11, fontWeight: FontWeight.w700, color: color)),
+          Text(label, style: TextStyle(fontSize: 10, fontWeight: FontWeight.w700, color: color)),
           const SizedBox(height: 2),
-          Text('Rs $amount', style: TextStyle(fontSize: 16, fontWeight: FontWeight.w800, color: color)),
+          Text('Rs $amount', style: TextStyle(fontSize: 14, fontWeight: FontWeight.w800, color: color), maxLines: 1, overflow: TextOverflow.ellipsis),
         ],
       ),
     );
@@ -220,24 +223,24 @@ class _FoodHutMainScreenState extends State<FoodHutMainScreen> {
       opacity: enabled ? 1.0 : 0.5,
       child: InkWell(
         onTap: enabled ? onTap : null,
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: BorderRadius.circular(12),
         child: Container(
-          padding: const EdgeInsets.all(18),
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
           decoration: BoxDecoration(
             gradient: LinearGradient(colors: [color, color.withValues(alpha: 0.8)]),
-            borderRadius: BorderRadius.circular(16),
+            borderRadius: BorderRadius.circular(12),
           ),
           child: Row(
             children: [
               Container(
-                padding: const EdgeInsets.all(10),
+                padding: const EdgeInsets.all(8),
                 decoration: BoxDecoration(color: Colors.white.withValues(alpha: 0.2), shape: BoxShape.circle),
-                child: Icon(icon, color: Colors.white, size: 24),
+                child: Icon(icon, color: Colors.white, size: 20),
               ),
-              const SizedBox(width: 16),
+              const SizedBox(width: 12),
               Expanded(child: Text(title,
-                  style: const TextStyle(fontSize: 17, fontWeight: FontWeight.w800, color: Colors.white))),
-              const Icon(Icons.arrow_forward_ios, color: Colors.white, size: 16),
+                  style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w800, color: Colors.white))),
+              const Icon(Icons.arrow_forward_ios, color: Colors.white, size: 14),
             ],
           ),
         ),
@@ -272,29 +275,31 @@ class _SaleTile extends StatelessWidget {
 
     return Card(
       margin: const EdgeInsets.only(bottom: 6),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
       child: ListTile(
+        dense: true,
         leading: CircleAvatar(backgroundColor: color.withValues(alpha: 0.15),
-            child: Icon(Icons.fastfood, color: color, size: 20)),
+            radius: 18,
+            child: Icon(Icons.fastfood, color: color, size: 18)),
         title: Text('${sale['itemName']} (${sale['variation']})',
-            style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 14)),
+            style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 13)),
         subtitle: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(type, style: TextStyle(color: color, fontWeight: FontWeight.w500, fontSize: 12)),
+            Text(type, style: TextStyle(color: color, fontWeight: FontWeight.w500, fontSize: 11)),
             if (recordedBy.isNotEmpty)
-              Text('By: $recordedBy', style: const TextStyle(fontSize: 11, color: Colors.grey)),
+              Text('By: $recordedBy', style: const TextStyle(fontSize: 10, color: Colors.grey)),
           ],
         ),
         trailing: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.end,
           children: [
-            Text('${displayQty}x', style: const TextStyle(fontWeight: FontWeight.bold)),
-            Text('Rs ${price * displayQty}', style: const TextStyle(fontSize: 12, color: Colors.grey)),
+            Text('${displayQty}x', style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 13)),
+            Text('Rs ${price * displayQty}', style: const TextStyle(fontSize: 11, color: Colors.grey)),
           ],
         ),
       ),
     );
   }
 }
-

@@ -137,7 +137,7 @@ class _HomeScreenState extends State<HomeScreen> {
       body: RefreshIndicator(
         onRefresh: _loadUser,
         child: ListView(
-          padding: const EdgeInsets.symmetric(horizontal: 0, vertical: 16),
+          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 12),
           children: [
             // ── Quick Balance Summary (Admin/SuperAdmin) ─────
             if (user != null && (user.isAdmin || user.isSuperAdmin)) ...[
@@ -147,12 +147,13 @@ class _HomeScreenState extends State<HomeScreen> {
                 loading: _balancesLoading,
                 onRefresh: _loadBalances,
               ),
-              const SizedBox(height: 16),
+              const SizedBox(height: 12),
             ],
 
             // ── Customer ─────────────────────────────────────
             if (user?.isCustomer == true) ...[
               _CustomerPlaceholder(name: user!.name),
+              const SizedBox(height: 12),
             ],
 
             // ── Admin sees My Activities + Shop Management ───
@@ -165,7 +166,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 onTap: () => Navigator.push(context,
                     MaterialPageRoute(builder: (_) => MyActivitiesScreen(user: user!))),
               ),
-              const SizedBox(height: 16),
+              const SizedBox(height: 12),
               _EntryCard(
                 icon: Icons.storefront_rounded,
                 title: 'Shop Management',
@@ -178,7 +179,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
             // ── SuperAdmin also sees Business Summary + Admin Ops ──
             if (user?.isSuperAdmin == true) ...[
-              const SizedBox(height: 16),
+              const SizedBox(height: 12),
               _EntryCard(
                 icon: Icons.analytics_rounded,
                 title: 'Business Summary',
@@ -187,7 +188,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 onTap: () => Navigator.push(context,
                     MaterialPageRoute(builder: (_) => const BusinessSummaryScreen())),
               ),
-              const SizedBox(height: 16),
+              const SizedBox(height: 12),
               _EntryCard(
                 icon: Icons.admin_panel_settings_rounded,
                 title: 'Admin Operations',
@@ -226,26 +227,26 @@ class _EntryCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Material(
       color: Colors.white,
-      borderRadius: BorderRadius.circular(20),
+      borderRadius: BorderRadius.circular(12),
       elevation: 2,
-      shadowColor: color.withValues(alpha: 0.15),
+      shadowColor: color.withValues(alpha: 0.1),
       child: InkWell(
         onTap: onTap,
-        borderRadius: BorderRadius.circular(20),
+        borderRadius: BorderRadius.circular(12),
         child: Padding(
-          padding: const EdgeInsets.all(16),
+          padding: const EdgeInsets.all(12),
           child: Row(
             children: [
               Container(
-                width: 48,
-                height: 48,
+                width: 44,
+                height: 44,
                 decoration: BoxDecoration(
                   color: color.withValues(alpha: 0.12),
-                  borderRadius: BorderRadius.circular(12),
+                  borderRadius: BorderRadius.circular(8),
                 ),
-                child: Icon(icon, color: color, size: 26),
+                child: Icon(icon, color: color, size: 24),
               ),
-              const SizedBox(width: 14),
+              const SizedBox(width: 12),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -253,13 +254,13 @@ class _EntryCard extends StatelessWidget {
                     Text(title,
                         style: const TextStyle(
                             fontSize: 15, fontWeight: FontWeight.w700, color: Colors.black87)),
-                    const SizedBox(height: 2),
+                    const SizedBox(height: 1),
                     Text(subtitle,
-                        style: TextStyle(fontSize: 12, color: Colors.grey.shade600)),
+                        style: TextStyle(fontSize: 11, color: Colors.grey.shade600)),
                   ],
                 ),
               ),
-              Icon(Icons.arrow_forward_ios_rounded, size: 16, color: color),
+              Icon(Icons.arrow_forward_ios_rounded, size: 14, color: color),
             ],
           ),
         ),
@@ -289,37 +290,21 @@ class _QuickBalanceCard extends StatelessWidget {
     return Container(
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: BorderRadius.circular(12),
         border: Border.all(color: Colors.grey.shade200),
         boxShadow: [
-          // Main drop shadow
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.10),
-            blurRadius: 14,
-            spreadRadius: 0,
-            offset: const Offset(0, 4),
-          ),
-          // Softer wide shadow for depth
           BoxShadow(
             color: Colors.black.withValues(alpha: 0.05),
-            blurRadius: 30,
-            spreadRadius: 2,
-            offset: const Offset(0, 8),
-          ),
-          // Top inner highlight (emboss effect)
-          BoxShadow(
-            color: Colors.white.withValues(alpha: 0.9),
-            blurRadius: 0,
-            spreadRadius: 0,
-            offset: const Offset(0, -1),
+            blurRadius: 4,
+            offset: const Offset(0, 2),
           ),
         ],
       ),
-      padding: const EdgeInsets.all(12),
+      padding: const EdgeInsets.all(8),
       child: loading
           ? const Center(
               child: Padding(
-                padding: EdgeInsets.symmetric(vertical: 12),
+                padding: EdgeInsets.symmetric(vertical: 20),
                 child: SizedBox(
                   width: 22, height: 22,
                   child: CircularProgressIndicator(strokeWidth: 2),
@@ -329,40 +314,28 @@ class _QuickBalanceCard extends StatelessWidget {
           : Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-
-                // Shop 1: Cafe (full width)
                 _BalanceTile(
                   label: '☕ Cafe',
                   amount: shopBalances['CAFE'] ?? 0,
                   color: AppTheme.cafeColor,
-                  fullWidth: true,
                 ),
-                const SizedBox(height: 8),
-
-                // Shop 2: Bookshop (full width)
+                const SizedBox(height: 4),
                 _BalanceTile(
                   label: '📚 Bookshop',
                   amount: shopBalances['BOOKSHOP'] ?? 0,
                   color: AppTheme.bookshopColor,
-                  fullWidth: true,
                 ),
-                const SizedBox(height: 8),
-
-                // Shop 3: Food Hut (full width)
+                const SizedBox(height: 4),
                 _BalanceTile(
                   label: '🍽️ Food Hut',
                   amount: shopBalances['FOODHUT'] ?? 0,
                   color: AppTheme.foodhutColor,
-                  fullWidth: true,
                 ),
-                const SizedBox(height: 8),
-
-                // Credits (full width)
+                const SizedBox(height: 4),
                 _BalanceTile(
                   label: '💳 Unpaid Credits',
                   amount: unpaidCredits,
                   color: AppTheme.creditsColor,
-                  fullWidth: true,
                 ),
               ],
             ),
@@ -374,73 +347,38 @@ class _BalanceTile extends StatelessWidget {
   final String label;
   final double amount;
   final Color color;
-  final bool fullWidth;
 
   const _BalanceTile({
     required this.label,
     required this.amount,
     required this.color,
-    this.fullWidth = false,
   });
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsets.symmetric(
-          horizontal: fullWidth ? 16 : 10, vertical: fullWidth ? 12 : 9),
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 10),
       decoration: BoxDecoration(
         color: color,
-        borderRadius: BorderRadius.circular(10),
-        boxShadow: [
-          BoxShadow(
-            color: color.withValues(alpha: 0.35),
-            blurRadius: 8,
-            offset: const Offset(0, 3),
+        borderRadius: BorderRadius.circular(8),
+      ),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Text(label,
+              style: const TextStyle(
+                  color: Colors.white,
+                  fontSize: 14,
+                  fontWeight: FontWeight.w700)),
+          Text(
+            'Rs ${NumberFormat('#,##0').format(amount)}',
+            style: const TextStyle(
+                color: Colors.white,
+                fontSize: 18,
+                fontWeight: FontWeight.w900),
           ),
         ],
       ),
-      child: fullWidth
-          ? Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(label,
-                    style: const TextStyle(
-                        color: Colors.white,
-                        fontSize: 13,
-                        fontWeight: FontWeight.w700)),
-                Text(
-                  'Rs ${NumberFormat('#,##0').format(amount)}',
-                  style: const TextStyle(
-                      color: Colors.white,
-                      fontSize: 16,
-                      fontWeight: FontWeight.w900),
-                ),
-              ],
-            )
-          : Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                Text(label,
-                    textAlign: TextAlign.center,
-                    style: const TextStyle(
-                        color: Colors.white,
-                        fontSize: 12,
-                        fontWeight: FontWeight.w700),
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis),
-                const SizedBox(height: 2),
-                Text(
-                  'Rs ${NumberFormat('#,##0').format(amount)}',
-                  textAlign: TextAlign.center,
-                  style: const TextStyle(
-                      color: Colors.white,
-                      fontSize: 14,
-                      fontWeight: FontWeight.w900),
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                ),
-              ],
-            ),
     );
   }
 }
@@ -456,8 +394,8 @@ class _CustomerPlaceholder extends StatelessWidget {
       padding: const EdgeInsets.all(28),
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: AppTheme.primaryColor.withValues(alpha: 0.3)),
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: AppTheme.primaryColor.withValues(alpha: 0.2)),
       ),
       child: Column(
         children: [
@@ -559,7 +497,7 @@ class _ShopManagementScreenState extends State<ShopManagementScreen> {
       body: RefreshIndicator(
         onRefresh: _load,
         child: ListView(
-          padding: const EdgeInsets.symmetric(horizontal: 0, vertical: 16),
+          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 12),
           children: _loading
               ? [const Padding(padding: EdgeInsets.all(40), child: Center(child: CircularProgressIndicator()))]
               : [
@@ -569,28 +507,28 @@ class _ShopManagementScreenState extends State<ShopManagementScreen> {
                     icon: Icons.coffee_rounded,
                     onTap: () => _nav(const ShopDetailScreen(shopCode: 'CAFE', shopName: 'Cafe')),
                   ),
-                  const SizedBox(height: 14),
+                  const SizedBox(height: 10),
                   _PremiumShopButton(
                     emoji: '📚', text: 'Bookshop', balance: _balances['BOOKSHOP'],
                     gradient: const [Color(0xFF1565C0), Color(0xFF42A5F5)],
                     icon: Icons.menu_book_rounded,
                     onTap: () => _nav(const ShopDetailScreen(shopCode: 'BOOKSHOP', shopName: 'Bookshop')),
                   ),
-                  const SizedBox(height: 14),
+                  const SizedBox(height: 10),
                   _PremiumShopButton(
                     emoji: '🍽️', text: 'Food Hut', balance: _balances['FOODHUT'],
                     gradient: const [Color(0xFFB65505), Color(0xFFFF9800)],
                     icon: Icons.restaurant_rounded,
                     onTap: () => _nav(const ShopDetailScreen(shopCode: 'FOODHUT', shopName: 'Food Hut')),
                   ),
-                  const SizedBox(height: 14),
+                  const SizedBox(height: 10),
                   _PremiumShopButton(
                     emoji: '🍳', text: 'Food Hut Kitchen', balance: null,
                     gradient: const [Color(0xFF795548), Color(0xFFA1887F)],
                     icon: Icons.soup_kitchen_rounded,
                     onTap: () => _nav(const FoodHutMainScreen()),
                   ),
-                  const SizedBox(height: 14),
+                  const SizedBox(height: 10),
                   _PremiumShopButton(
                     emoji: '💳', text: 'Credits', balance: _unpaidCredits,
                     balanceLabel: 'unpaid',
@@ -598,7 +536,7 @@ class _ShopManagementScreenState extends State<ShopManagementScreen> {
                     icon: Icons.credit_card_rounded,
                     onTap: () => _nav(const CreditsScreen()),
                   ),
-                  const SizedBox(height: 14),
+                  const SizedBox(height: 10),
                   _PremiumShopButton(
                     emoji: '📋', text: 'Expense Types', balance: null,
                     gradient: [Colors.purple.shade700, Colors.purple.shade400],
@@ -650,70 +588,58 @@ class _PremiumShopButtonState extends State<_PremiumShopButton> {
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 120),
         transform: Matrix4.diagonal3Values(
-            _pressed ? 0.97 : 1.0, _pressed ? 0.97 : 1.0, 1.0),
+            _pressed ? 0.98 : 1.0, _pressed ? 0.98 : 1.0, 1.0),
         transformAlignment: Alignment.center,
-        height: 88,
+        height: 80,
         decoration: BoxDecoration(
           gradient: LinearGradient(
             colors: widget.gradient,
             begin: Alignment.centerLeft,
             end: Alignment.centerRight,
           ),
-          borderRadius: BorderRadius.circular(20),
+          borderRadius: BorderRadius.circular(12),
           boxShadow: [
             BoxShadow(
-              color: widget.gradient[0].withValues(alpha: 0.38),
-              blurRadius: 10,
-              offset: const Offset(0, 5),
+              color: widget.gradient[0].withValues(alpha: 0.3),
+              blurRadius: 8,
+              offset: const Offset(0, 4),
             ),
           ],
         ),
         child: ClipRRect(
-          borderRadius: BorderRadius.circular(20),
+          borderRadius: BorderRadius.circular(12),
           child: Stack(
             children: [
               // Decorative circles
               Positioned(
-                top: -28,
-                right: 50,
+                top: -30,
+                right: 60,
                 child: Container(
-                  width: 90,
-                  height: 90,
+                  width: 100,
+                  height: 100,
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
-                    color: Colors.white.withValues(alpha: 0.07),
-                  ),
-                ),
-              ),
-              Positioned(
-                bottom: -35,
-                right: -15,
-                child: Container(
-                  width: 110,
-                  height: 110,
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    color: Colors.white.withValues(alpha: 0.05),
+                    color: Colors.white.withValues(alpha: 0.06),
                   ),
                 ),
               ),
               // Content
               Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 22, vertical: 14),
+                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
                 child: Row(
                   children: [
                     Container(
-                      width: 54,
-                      height: 54,
+                      width: 50,
+                      height: 50,
                       decoration: BoxDecoration(
                         shape: BoxShape.circle,
                         color: Colors.white.withValues(alpha: 0.18),
                       ),
                       child: Center(
-                        child: Text(widget.emoji, style: const TextStyle(fontSize: 28)),
+                        child: Text(widget.emoji, style: const TextStyle(fontSize: 24)),
                       ),
                     ),
-                    const SizedBox(width: 18),
+                    const SizedBox(width: 14),
                     Expanded(
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -721,31 +647,31 @@ class _PremiumShopButtonState extends State<_PremiumShopButton> {
                         children: [
                           Text(widget.text,
                               style: const TextStyle(
-                                  fontSize: 19,
+                                  fontSize: 20,
                                   fontWeight: FontWeight.bold,
                                   color: Colors.white,
-                                  letterSpacing: 0.3)),
+                                  letterSpacing: 0.2)),
                           if (widget.balance != null) ...[
-                            const SizedBox(height: 3),
+                            const SizedBox(height: 2),
                             Row(
                               children: [
                                 Text(
                                   'Rs ${NumberFormat('#,##0').format(widget.balance!)}',
                                   style: TextStyle(
-                                      fontSize: 14,
+                                      fontSize: 13,
                                       fontWeight: FontWeight.w600,
                                       color: Colors.white.withValues(alpha: 0.9)),
                                 ),
                                 if (widget.balanceLabel != null) ...[
                                   const SizedBox(width: 4),
                                   Container(
-                                    padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 1),
+                                    padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 1),
                                     decoration: BoxDecoration(
                                       color: Colors.white.withValues(alpha: 0.2),
-                                      borderRadius: BorderRadius.circular(8),
+                                      borderRadius: BorderRadius.circular(4),
                                     ),
                                     child: Text(widget.balanceLabel!,
-                                        style: const TextStyle(fontSize: 9, color: Colors.white70)),
+                                        style: const TextStyle(fontSize: 8, color: Colors.white70)),
                                   ),
                                 ],
                               ],
@@ -755,7 +681,7 @@ class _PremiumShopButtonState extends State<_PremiumShopButton> {
                       ),
                     ),
                     Icon(Icons.arrow_forward_ios,
-                        color: Colors.white.withValues(alpha: 0.85), size: 18),
+                        color: Colors.white.withValues(alpha: 0.85), size: 14),
                   ],
                 ),
               ),
@@ -855,33 +781,34 @@ class _BusinessSummaryScreenState extends State<BusinessSummaryScreen> {
       body: RefreshIndicator(
         onRefresh: _load,
         child: ListView(
-          padding: const EdgeInsets.symmetric(horizontal: 0, vertical: 16),
+          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 12),
           children: [
             // ── MONTH SWITCHER ────────────────────────────────
             Container(
-              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
               decoration: BoxDecoration(
                 color: Colors.white,
-                borderRadius: BorderRadius.circular(12),
+                borderRadius: BorderRadius.circular(10),
                 border: Border.all(color: Colors.grey.shade200),
-                boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: 0.05), blurRadius: 6, offset: const Offset(0, 2))],
+                boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: 0.05), blurRadius: 4, offset: const Offset(0, 2))],
               ),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  IconButton(icon: const Icon(Icons.chevron_left), onPressed: _prevMonth, color: Colors.purple.shade700),
+                  IconButton(icon: const Icon(Icons.chevron_left), onPressed: _prevMonth, color: Colors.purple.shade700, iconSize: 20),
                   Text(
                     DateFormat('MMMM yyyy').format(_selectedMonth),
-                    style: TextStyle(fontSize: 15, fontWeight: FontWeight.w700, color: Colors.purple.shade700),
+                    style: TextStyle(fontSize: 14, fontWeight: FontWeight.w700, color: Colors.purple.shade700),
                   ),
                   IconButton(
                     icon: Icon(Icons.chevron_right, color: _isCurrentMonth ? Colors.grey.shade300 : Colors.purple.shade700),
                     onPressed: _isCurrentMonth ? null : _nextMonth,
+                    iconSize: 20,
                   ),
                 ],
               ),
             ),
-            const SizedBox(height: 16),
+            const SizedBox(height: 12),
 
             // ── MONTHLY BALANCE DASHBOARD ─────────────────────
             _SummaryDashboard(
@@ -892,13 +819,15 @@ class _BusinessSummaryScreenState extends State<BusinessSummaryScreen> {
               valFn: _v,
               monthLabel: DateFormat('MMM yyyy').format(_selectedMonth),
             ),
-            const SizedBox(height: 24),
+            const SizedBox(height: 16),
 
             // ── SECTION LABEL ─────────────────────────────────
-            Text('Management Tools',
-                style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600,
-                    color: Colors.grey.shade600, letterSpacing: 0.5)),
-            const SizedBox(height: 12),
+            const Padding(
+              padding: EdgeInsets.only(left: 4, bottom: 8),
+              child: Text('MANAGEMENT TOOLS',
+                  style: TextStyle(fontSize: 11, fontWeight: FontWeight.w800,
+                      color: Colors.blueGrey, letterSpacing: 1.0)),
+            ),
 
             // ── MENU GRID ─────────────────────────────────────
             GridView.builder(
@@ -906,13 +835,14 @@ class _BusinessSummaryScreenState extends State<BusinessSummaryScreen> {
               physics: const NeverScrollableScrollPhysics(),
               gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                 crossAxisCount: 2,
-                crossAxisSpacing: 10,
-                mainAxisSpacing: 10,
-                childAspectRatio: 1.4,
+                crossAxisSpacing: 8,
+                mainAxisSpacing: 8,
+                childAspectRatio: 1.5,
               ),
               itemCount: menuItems.length,
               itemBuilder: (context, i) => _MenuCard(item: menuItems[i]),
             ),
+            const SizedBox(height: 20),
           ],
         ),
       ),
@@ -964,16 +894,13 @@ class _SummaryDashboard extends StatelessWidget {
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
         ),
-        borderRadius: BorderRadius.circular(22),
-        boxShadow: [
-          BoxShadow(color: Colors.purple.withValues(alpha: 0.25), blurRadius: 16, offset: const Offset(0, 6)),
-        ],
+        borderRadius: BorderRadius.circular(16),
       ),
-      padding: const EdgeInsets.all(20),
+      padding: const EdgeInsets.all(16),
       child: loading
           ? const Center(child: Padding(
               padding: EdgeInsets.all(24),
-              child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2)))
+              child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2.5)))
           : Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -982,29 +909,29 @@ class _SummaryDashboard extends StatelessWidget {
                   children: [
                     Text(
                       monthLabel.isNotEmpty ? '$monthLabel Summary' : "Today's Balance",
-                      style: const TextStyle(color: Colors.white70, fontSize: 13, fontWeight: FontWeight.w500),
+                      style: const TextStyle(color: Colors.white70, fontSize: 12, fontWeight: FontWeight.w500),
                     ),
                     Text(
                       monthLabel.isNotEmpty ? '' : DateFormat('EEE, MMM d').format(DateTime.now()),
-                      style: const TextStyle(color: Colors.white54, fontSize: 12),
+                      style: const TextStyle(color: Colors.white54, fontSize: 11),
                     ),
                   ],
                 ),
-                const SizedBox(height: 6),
+                const SizedBox(height: 4),
                 Text(
                   'Rs ${_fmt(totalBalance)}',
                   style: const TextStyle(
-                      color: Colors.white, fontSize: 30, fontWeight: FontWeight.bold, letterSpacing: -0.5),
+                      color: Colors.white, fontSize: 28, fontWeight: FontWeight.bold, letterSpacing: -0.5),
                 ),
-                const SizedBox(height: 4),
+                const SizedBox(height: 6),
                 Row(children: [
                   _pill('Sales Rs ${_fmt(totalSales)}', Colors.greenAccent.shade400),
-                  const SizedBox(width: 8),
+                  const SizedBox(width: 6),
                   _pill('Exp Rs ${_fmt(totalExp)}', Colors.orange.shade300),
                 ]),
-                const SizedBox(height: 20),
-                const Divider(color: Colors.white24, height: 1),
                 const SizedBox(height: 16),
+                const Divider(color: Colors.white24, height: 1),
+                const SizedBox(height: 12),
 
                 // Per-shop row
                 Row(
@@ -1014,13 +941,13 @@ class _SummaryDashboard extends StatelessWidget {
                       balance: cafeBalance, sales: cafeSales, expenses: cafeExp,
                       color: const Color(0xFF4CAF50),
                     )),
-                    const SizedBox(width: 10),
+                    const SizedBox(width: 8),
                     Expanded(child: _ShopBalanceTile(
                       emoji: '📚', name: 'Bookshop',
                       balance: bookshopBalance, sales: bookshopSales, expenses: bookshopExp,
                       color: const Color(0xFF64B5F6),
                     )),
-                    const SizedBox(width: 10),
+                    const SizedBox(width: 8),
                     Expanded(child: _ShopBalanceTile(
                       emoji: '🍽️', name: 'Food Hut',
                       balance: foodhutBalance, sales: foodhutSales, expenses: foodhutExp,
@@ -1035,12 +962,12 @@ class _SummaryDashboard extends StatelessWidget {
 
   Widget _pill(String text, Color color) {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 3),
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
       decoration: BoxDecoration(
         color: Colors.white.withValues(alpha: 0.12),
-        borderRadius: BorderRadius.circular(20),
+        borderRadius: BorderRadius.circular(10),
       ),
-      child: Text(text, style: TextStyle(color: color, fontSize: 11, fontWeight: FontWeight.w600)),
+      child: Text(text, style: TextStyle(color: color, fontSize: 10, fontWeight: FontWeight.w600)),
     );
   }
 
@@ -1067,30 +994,33 @@ class _ShopBalanceTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 12),
+      padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 10),
       decoration: BoxDecoration(
         color: Colors.white.withValues(alpha: 0.1),
-        borderRadius: BorderRadius.circular(14),
-        border: Border.all(color: Colors.white.withValues(alpha: 0.15)),
+        borderRadius: BorderRadius.circular(10),
+        border: Border.all(color: Colors.white.withValues(alpha: 0.12)),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text('$emoji $name', style: TextStyle(color: color, fontSize: 11, fontWeight: FontWeight.w700)),
-          const SizedBox(height: 6),
+          Text('$emoji $name', style: TextStyle(color: color, fontSize: 12, fontWeight: FontWeight.w700), maxLines: 1, overflow: TextOverflow.ellipsis),
+          const SizedBox(height: 4),
           Text(
-            'Rs ${NumberFormat('#,##0').format(balance)}',
-            style: const TextStyle(color: Colors.white, fontSize: 14, fontWeight: FontWeight.bold),
+            'Rs ${_fmt(balance)}',
+            style: const TextStyle(color: Colors.white, fontSize: 13, fontWeight: FontWeight.bold),
+            maxLines: 1, overflow: TextOverflow.ellipsis,
           ),
           const SizedBox(height: 4),
-          Text('Sales: Rs ${NumberFormat('#,##0').format(sales)}',
-              style: const TextStyle(color: Colors.white60, fontSize: 10)),
-          Text('Exp: Rs ${NumberFormat('#,##0').format(expenses)}',
-              style: const TextStyle(color: Colors.white60, fontSize: 10)),
+          Text('S: ${_fmt(sales)}',
+              style: const TextStyle(color: Colors.white60, fontSize: 9), maxLines: 1, overflow: TextOverflow.ellipsis),
+          Text('E: ${_fmt(expenses)}',
+              style: const TextStyle(color: Colors.white60, fontSize: 9), maxLines: 1, overflow: TextOverflow.ellipsis),
         ],
       ),
     );
   }
+
+  String _fmt(double v) => NumberFormat('#,##0').format(v);
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -1107,43 +1037,43 @@ class _ActivityScreen extends StatelessWidget {
       backgroundColor: const Color(0xFFF7F9FB),
       appBar: AppBar(title: Text(title)),
       body: ListView.separated(
-        padding: const EdgeInsets.symmetric(horizontal: 0, vertical: 16),
+        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 12),
         itemCount: items.length,
-        separatorBuilder: (_, __) => const SizedBox(height: 10),
+        separatorBuilder: (_, __) => const SizedBox(height: 8),
         itemBuilder: (context, i) {
           final item = items[i];
           return Material(
             color: Colors.white,
-            borderRadius: BorderRadius.circular(16),
-            elevation: 2,
-            shadowColor: item.color.withValues(alpha: 0.15),
+            borderRadius: BorderRadius.circular(12),
+            elevation: 1.5,
+            shadowColor: item.color.withValues(alpha: 0.1),
             child: InkWell(
               onTap: item.onTap,
-              borderRadius: BorderRadius.circular(16),
+              borderRadius: BorderRadius.circular(12),
               child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+                padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 14),
                 child: Row(
                   children: [
                     Container(
-                      width: 52,
-                      height: 52,
+                      width: 40,
+                      height: 40,
                       decoration: BoxDecoration(
                         color: item.color.withValues(alpha: 0.12),
-                        borderRadius: BorderRadius.circular(14),
+                        borderRadius: BorderRadius.circular(8),
                       ),
-                      child: Icon(item.icon, color: item.color, size: 28),
+                      child: Icon(item.icon, color: item.color, size: 22),
                     ),
-                    const SizedBox(width: 16),
+                    const SizedBox(width: 14),
                     Text(
                       item.label,
                       style: TextStyle(
-                        fontSize: 16,
+                        fontSize: 15,
                         fontWeight: FontWeight.w700,
                         color: Colors.grey.shade800,
                       ),
                     ),
                     const Spacer(),
-                    Icon(Icons.arrow_forward_ios_rounded, size: 16, color: item.color),
+                    Icon(Icons.arrow_forward_ios_rounded, size: 14, color: item.color),
                   ],
                 ),
               ),
@@ -1177,12 +1107,12 @@ class _SubScreen extends StatelessWidget {
       backgroundColor: const Color(0xFFF7F9FB),
       appBar: AppBar(title: Text(title)),
       body: GridView.builder(
-        padding: const EdgeInsets.all(20),
+        padding: const EdgeInsets.all(8),
         gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
           crossAxisCount: 2,
-          crossAxisSpacing: 10,
-          mainAxisSpacing: 10,
-          childAspectRatio: 1.4,
+          crossAxisSpacing: 8,
+          mainAxisSpacing: 8,
+          childAspectRatio: 1.5,
         ),
         itemCount: items.length,
         itemBuilder: (context, i) => _MenuCard(item: items[i]),
@@ -1210,31 +1140,31 @@ class _MenuCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Material(
       color: Colors.white,
-      borderRadius: BorderRadius.circular(18),
+      borderRadius: BorderRadius.circular(12),
       elevation: 1.5,
-      shadowColor: item.color.withValues(alpha: 0.12),
+      shadowColor: item.color.withValues(alpha: 0.1),
       child: InkWell(
         onTap: item.onTap,
-        borderRadius: BorderRadius.circular(18),
+        borderRadius: BorderRadius.circular(12),
         child: Padding(
-          padding: const EdgeInsets.all(12),
+          padding: const EdgeInsets.all(10),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Container(
-                padding: const EdgeInsets.all(9),
+                padding: const EdgeInsets.all(8),
                 decoration: BoxDecoration(
                   color: item.color.withValues(alpha: 0.1),
-                  borderRadius: BorderRadius.circular(10),
+                  borderRadius: BorderRadius.circular(8),
                 ),
-                child: Icon(item.icon, color: item.color, size: 22),
+                child: Icon(item.icon, color: item.color, size: 20),
               ),
-              const SizedBox(height: 8),
+              const SizedBox(height: 6),
               Text(
                 item.label,
                 textAlign: TextAlign.center,
                 style: TextStyle(
-                  fontSize: 12,
+                  fontSize: 11,
                   fontWeight: FontWeight.w700,
                   color: Colors.grey.shade800,
                 ),
